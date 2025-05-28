@@ -3,10 +3,14 @@
 ## Required GitHub Secrets
 
 ### Twitter/X (OAuth 1.0a)
-1. `TWITTER_CLIENT_ID` - Your app's API Key (Consumer Key)
-2. `TWITTER_CLIENT_SECRET` - Your app's API Key Secret (Consumer Secret)
+1. `TWITTER_API_KEY` - Your app's API Key (Consumer Key)
+2. `TWITTER_API_SECRET` - Your app's API Key Secret (Consumer Secret)
 3. `TWITTER_ACCESS_TOKEN` - Access Token (OAuth 1.0a)
 4. `TWITTER_ACCESS_TOKEN_SECRET` - Access Token Secret (OAuth 1.0a)
+
+**Important**: These are found in your Twitter app's "Keys and tokens" page under:
+- "Consumer Keys" section (API Key & Secret)
+- "Authentication Tokens" section (Access Token & Secret)
 
 ### Bluesky
 1. `BLUESKY_HANDLE` - Your Bluesky handle (e.g., `furukama.bsky.social`)
