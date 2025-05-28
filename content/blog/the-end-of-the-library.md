@@ -32,7 +32,7 @@ are ready to go. Only to discover that it becomes a full-time job watching
 out for breaking changes in 100s of libraries. Constantly.
 
 Especially if you only use a fraction of what these libraries offer. Enter AI Coding.
-Just give your favorite Coding Agent a clear spec of what you used to have this
+Just give your [favorite Coding Agent](https://claude.ai/code) a clear spec of what you used to have this
 library for, show it the code where it was included and let it code an alternative
 modular piece of code for you to use that does just what you need it to do and nothing
 more. And let the AI care about updating it when the world around it changed. I wouldn't
