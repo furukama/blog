@@ -6,8 +6,7 @@ description: "Why AI coding assistants like Claude Code are making traditional s
 tags: ["ai", "coding", "libraries", "software-engineering"]
 categories: ["technology"]
 images: ["/images/posts/the-end-of-the-library/social-card.png"]
-social:
-  bluesky_uri: "at://did:plc:rj5fmgrcrbge4xurofxy5jpe/app.bsky.feed.post/3lqbf5dq3u522"
+bsky: "at://did:plc:rj5fmgrcrbge4xurofxy5jpe/app.bsky.feed.post/3lqbf5dq3u522"
 ---
 
 After spending days (and sleepless nights) coding with my AI assistant Claude Code,

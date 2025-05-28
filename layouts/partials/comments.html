@@ -1,131 +1,15 @@
-{{ $blueskyUri := .Params.social.bluesky_uri }}
-
-<div id="comments-section" class="comments">
-  <h3>Comments</h3>
-  
-  <div class="comment-buttons">
-    {{ if $blueskyUri }}
-    {{ $blueskyHandle := $.Site.Params.social.bluesky }}
-    {{ $blueskyRkey := index (split $blueskyUri "/") (sub (len (split $blueskyUri "/")) 1) }}
-    <a href="https://bsky.app/profile/{{ $blueskyHandle }}/post/{{ $blueskyRkey }}" target="_blank" rel="noopener" class="comment-button">
-      💬 Comment on Bluesky
+{{ if .Params.showReply }} 
+{{ with .Site.Params.author.email }}
+<p>
+    <a
+        href='mailto:{{ . }}?subject={{ i18n "email-subject" }}"{{ default $.Site.Title $.Page.Title }}"'
+    >
+        {{ i18n "email-reply" }} ↪
     </a>
-    {{ end }}
-  </div>
-  
-  <div id="comments-container">
-    <p class="loading">Loading comments...</p>
-  </div>
-</div>
+</p>
+{{ end }} 
+{{ end }}
 
-<style>
-.comments {
-  margin-top: 3em;
-  padding-top: 2em;
-  border-top: 1px solid #ccc;
-}
-
-.comment-buttons {
-  display: flex;
-  gap: 1em;
-  margin-bottom: 2em;
-}
-
-.comment-button {
-  display: inline-block;
-  padding: 0.5em 1em;
-  background: #0085ff;
-  color: white;
-  text-decoration: none;
-  border-radius: 5px;
-  font-size: 0.9em;
-}
-
-.comment-button:hover {
-  opacity: 0.9;
-}
-
-.comment {
-  margin-bottom: 1.5em;
-  padding: 1em;
-  background: #f5f5f5;
-  border-radius: 5px;
-}
-
-.comment-header {
-  display: flex;
-  align-items: center;
-  gap: 0.5em;
-  margin-bottom: 0.5em;
-}
-
-.comment-author {
-  font-weight: bold;
-}
-
-.comment-platform {
-  font-size: 0.8em;
-  color: #666;
-}
-
-.comment-time {
-  font-size: 0.8em;
-  color: #666;
-  margin-left: auto;
-}
-
-.comment-text {
-  margin: 0;
-}
-
-.loading {
-  color: #666;
-  font-style: italic;
-}
-</style>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  const container = document.getElementById('comments-container');
-  const postSlug = {{ .File.BaseFileName | jsonify }};
-  
-  async function loadComments() {
-    try {
-      // Fetch cached comments data
-      const response = await fetch('/data/comments.json');
-      
-      if (!response.ok) {
-        throw new Error('Comments data not found');
-      }
-      
-      const allComments = await response.json();
-      const postComments = allComments[postSlug] || [];
-      displayComments(postComments);
-    } catch (error) {
-      console.error('Error loading comments:', error);
-      container.innerHTML = '<p>Comments are updated every 30 minutes.</p>';
-    }
-  }
-  
-  function displayComments(comments) {
-    if (comments.length === 0) {
-      container.innerHTML = '<p>No comments yet. Be the first to reply!</p>';
-      return;
-    }
-    
-    container.innerHTML = comments.map(comment => `
-      <div class="comment">
-        <div class="comment-header">
-          <span class="comment-author">${comment.author}</span>
-          <span class="comment-platform">(${comment.platform})</span>
-          <span class="comment-time">${new Date(comment.created_at).toLocaleString()}</span>
-        </div>
-        <p class="comment-text">${comment.text}</p>
-      </div>
-    `).join('');
-  }
-  
-  // Load comments on page load
-  loadComments();
-});
-</script>
+{{ if .Params.bsky }}
+<div id="comments-section" data-bsky-uri="{{ .Params.bsky }}"></div>
+{{ end }}
