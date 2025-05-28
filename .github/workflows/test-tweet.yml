@@ -1,0 +1,94 @@
+name: Test Tweet Workflow
+
+on:
+  workflow_dispatch:
+    inputs:
+      post_path:
+        description: 'Path to blog post to tweet about'
+        required: true
+        default: 'content/blog/the-end-of-the-library.md'
+
+jobs:
+  test-tweet:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: |
+          pip install tweepy pyyaml
+      
+      - name: Tweet test post
+        env:
+          TWITTER_API_KEY: ${{ secrets.TWITTER_API_KEY }}
+          TWITTER_API_SECRET: ${{ secrets.TWITTER_API_SECRET }}
+          TWITTER_ACCESS_TOKEN: ${{ secrets.TWITTER_ACCESS_TOKEN }}
+          TWITTER_ACCESS_SECRET: ${{ secrets.TWITTER_ACCESS_SECRET }}
+          POST_PATH: ${{ github.event.inputs.post_path }}
+        run: |
+          python3 << 'EOF'
+          import os
+          import yaml
+          import tweepy
+          
+          # Twitter API credentials
+          api_key = os.environ['TWITTER_API_KEY']
+          api_secret = os.environ['TWITTER_API_SECRET']
+          access_token = os.environ['TWITTER_ACCESS_TOKEN']
+          access_secret = os.environ['TWITTER_ACCESS_SECRET']
+          
+          # Authenticate
+          auth = tweepy.OAuthHandler(api_key, api_secret)
+          auth.set_access_token(access_token, access_secret)
+          api = tweepy.API(auth)
+          
+          # Get post path
+          post_path = os.environ['POST_PATH']
+          
+          print(f"Testing with post: {post_path}")
+          
+          with open(post_path, 'r') as f:
+              content = f.read()
+              
+          # Extract front matter
+          if content.startswith('---'):
+              front_matter = content.split('---')[1]
+              metadata = yaml.safe_load(front_matter)
+              
+              title = metadata.get('title', 'New post')
+              description = metadata.get('description', '')
+              
+              print(f"Title: {title}")
+              print(f"Description: {description}")
+              
+              # Create URL from filename
+              filename = os.path.basename(post_path).replace('.md', '')
+              url = f"https://furukama.com/blog/{filename}/"
+              
+              # Compose tweet
+              tweet = f"📝 {title}\n\n{description}\n\n{url}"
+              
+              # Ensure tweet is under 280 characters
+              if len(tweet) > 280:
+                  available_space = 280 - len(url) - 10  # 10 for newlines and emoji
+                  combined_text = f"📝 {title} - {description}"[:available_space] + "..."
+                  tweet = f"{combined_text}\n\n{url}"
+              
+              print(f"\nTweet preview ({len(tweet)} chars):")
+              print("="*40)
+              print(tweet)
+              print("="*40)
+              
+              # Post tweet
+              try:
+                  api.update_status(tweet)
+                  print(f"\n✅ Successfully tweeted!")
+              except Exception as e:
+                  print(f"\n❌ Error tweeting: {e}")
+                  exit(1)
+          EOF
