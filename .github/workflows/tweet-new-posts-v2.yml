@@ -1,0 +1,117 @@
+name: Tweet New Posts (API v2)
+
+on:
+  push:
+    paths:
+      - 'content/blog/*.md'
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      test_mode:
+        description: 'Test with existing post'
+        required: false
+        default: 'true'
+
+jobs:
+  tweet:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 2
+      
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: |
+          pip install tweepy>=4.14.0 pyyaml
+      
+      - name: Find post to tweet
+        id: find_post
+        run: |
+          if [ "${{ github.event.inputs.test_mode }}" = "true" ]; then
+            # Test mode - use existing post
+            POST="content/blog/the-end-of-the-library.md"
+          else
+            # Find new/modified posts
+            POST=$(git diff --name-only HEAD~1 HEAD | grep '^content/blog/.*\.md$' | grep -v '_index.md' | head -n1 || true)
+          fi
+          
+          if [ -n "$POST" ]; then
+            echo "post_path=$POST" >> $GITHUB_OUTPUT
+            echo "Found post: $POST"
+          else
+            echo "No new posts found"
+          fi
+      
+      - name: Tweet the post
+        if: steps.find_post.outputs.post_path
+        env:
+          TWITTER_CLIENT_ID: ${{ secrets.TWITTER_CLIENT_ID }}
+          TWITTER_CLIENT_SECRET: ${{ secrets.TWITTER_CLIENT_SECRET }}
+          TWITTER_ACCESS_TOKEN: ${{ secrets.TWITTER_ACCESS_TOKEN }}
+          TWITTER_ACCESS_TOKEN_SECRET: ${{ secrets.TWITTER_ACCESS_TOKEN_SECRET }}
+          POST_PATH: ${{ steps.find_post.outputs.post_path }}
+        run: |
+          python3 << 'EOF'
+          import os
+          import yaml
+          import tweepy
+          
+          # OAuth 2.0 User Context authentication
+          client = tweepy.Client(
+              consumer_key=os.environ['TWITTER_CLIENT_ID'],
+              consumer_secret=os.environ['TWITTER_CLIENT_SECRET'],
+              access_token=os.environ['TWITTER_ACCESS_TOKEN'],
+              access_token_secret=os.environ['TWITTER_ACCESS_TOKEN_SECRET']
+          )
+          
+          # Read post
+          post_path = os.environ['POST_PATH']
+          print(f"Processing: {post_path}")
+          
+          with open(post_path, 'r') as f:
+              content = f.read()
+          
+          # Extract metadata
+          if content.startswith('---'):
+              front_matter = content.split('---')[1]
+              metadata = yaml.safe_load(front_matter)
+              
+              title = metadata.get('title', 'New post')
+              description = metadata.get('description', '')
+              
+              # Create URL
+              filename = os.path.basename(post_path).replace('.md', '')
+              url = f"https://furukama.com/blog/{filename}/"
+              
+              # Compose tweet
+              tweet_text = f"📝 {title}\n\n{description}\n\n{url}"
+              
+              # Ensure under 280 chars
+              if len(tweet_text) > 280:
+                  available = 280 - len(url) - 10
+                  text = f"📝 {title} - {description}"[:available] + "..."
+                  tweet_text = f"{text}\n\n{url}"
+              
+              print(f"\nTweet ({len(tweet_text)} chars):")
+              print("="*50)
+              print(tweet_text)
+              print("="*50)
+              
+              try:
+                  # Post tweet using v2 API
+                  response = client.create_tweet(text=tweet_text)
+                  tweet_id = response.data['id']
+                  print(f"\n✅ Successfully tweeted!")
+                  print(f"View at: https://twitter.com/furukama/status/{tweet_id}")
+              except Exception as e:
+                  print(f"\n❌ Error: {e}")
+                  if hasattr(e, 'response'):
+                      print(f"Response: {e.response.text if hasattr(e.response, 'text') else e.response}")
+                  exit(1)
+          EOF
