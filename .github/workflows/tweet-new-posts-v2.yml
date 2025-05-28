@@ -1,0 +1,58 @@
+name: Tweet New Posts (API v2)
+
+on:
+  push:
+    paths:
+      - 'content/blog/*.md'
+    branches:
+      - main
+
+jobs:
+  tweet:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 2
+      
+      - name: Check for new posts
+        id: check
+        run: |
+          NEW_POSTS=$(git diff --name-only HEAD~1 HEAD | grep '^content/blog/.*\.md$' | grep -v '_index.md' || true)
+          echo "new_posts<<EOF" >> $GITHUB_OUTPUT
+          echo "$NEW_POSTS" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+      
+      - name: Tweet using API v2
+        if: steps.check.outputs.new_posts != ''
+        uses: actions/github-script@v6
+        env:
+          TWITTER_BEARER_TOKEN: ${{ secrets.TWITTER_BEARER_TOKEN }}
+        with:
+          script: |
+            const fs = require('fs');
+            const yaml = require('js-yaml');
+            
+            const newPosts = `${{ steps.check.outputs.new_posts }}`.trim().split('\n').filter(Boolean);
+            
+            for (const postPath of newPosts) {
+              const content = fs.readFileSync(postPath, 'utf8');
+              const match = content.match(/^---\n([\s\S]*?)\n---/);
+              
+              if (match) {
+                const metadata = yaml.load(match[1]);
+                const filename = postPath.split('/').pop().replace('.md', '');
+                const url = `https://furukama.com/blog/${filename}/`;
+                
+                let tweet = `📝 ${metadata.title}\n\n${metadata.description}\n\n${url}`;
+                
+                if (tweet.length > 280) {
+                  const available = 280 - url.length - 10;
+                  const text = `📝 ${metadata.title} - ${metadata.description}`.substring(0, available) + '...';
+                  tweet = `${text}\n\n${url}`;
+                }
+                
+                console.log(`Would tweet: ${tweet}`);
+                // Note: You'd need to add actual Twitter API v2 posting here
+              }
+            }
