@@ -62,13 +62,22 @@ jobs:
           import yaml
           import tweepy
           
-          # OAuth 2.0 User Context authentication
+          # OAuth 1.0a User Context authentication (for v2 API)
+          # Note: Twitter v2 API still uses OAuth 1.0a tokens for user context
           client = tweepy.Client(
               consumer_key=os.environ['TWITTER_CLIENT_ID'],
               consumer_secret=os.environ['TWITTER_CLIENT_SECRET'],
               access_token=os.environ['TWITTER_ACCESS_TOKEN'],
               access_token_secret=os.environ['TWITTER_ACCESS_TOKEN_SECRET']
           )
+          
+          # Debug: Verify authentication
+          try:
+              me = client.get_me()
+              print(f"Authenticated as: @{me.data.username}")
+          except Exception as e:
+              print(f"Authentication check failed: {e}")
+              print("Make sure you're using OAuth 1.0a tokens, not OAuth 2.0 tokens")
           
           # Read post
           post_path = os.environ['POST_PATH']

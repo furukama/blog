@@ -4,10 +4,12 @@
 
 Add these to your GitHub repository secrets:
 
-1. `TWITTER_CLIENT_ID` - Your app's Client ID (OAuth 2.0)
-2. `TWITTER_CLIENT_SECRET` - Your app's Client Secret (OAuth 2.0)
-3. `TWITTER_ACCESS_TOKEN` - User access token
-4. `TWITTER_ACCESS_TOKEN_SECRET` - User access token secret
+1. `TWITTER_CLIENT_ID` - Your app's API Key (Consumer Key)
+2. `TWITTER_CLIENT_SECRET` - Your app's API Key Secret (Consumer Secret)
+3. `TWITTER_ACCESS_TOKEN` - Access Token (OAuth 1.0a)
+4. `TWITTER_ACCESS_TOKEN_SECRET` - Access Token Secret (OAuth 1.0a)
+
+**Important**: Twitter v2 API for posting tweets requires OAuth 1.0a tokens, NOT OAuth 2.0!
 
 ## Getting the Credentials
 
@@ -22,20 +24,23 @@ Add these to your GitHub repository secrets:
    - Callback URL: `https://localhost:3000/callback` (or any URL)
    - Website URL: `https://furukama.com`
 
-### 2. Get OAuth 2.0 Credentials
+### 2. Get API Keys (OAuth 1.0a)
 
 1. In your app settings, go to "Keys and tokens"
-2. Under OAuth 2.0, copy:
-   - Client ID → `TWITTER_CLIENT_ID`
-   - Client Secret → `TWITTER_CLIENT_SECRET`
+2. Under "Consumer Keys", copy:
+   - API Key → `TWITTER_CLIENT_ID`
+   - API Key Secret → `TWITTER_CLIENT_SECRET`
 
-### 3. Generate User Access Tokens
+### 3. Generate Access Tokens (OAuth 1.0a)
 
 1. Still in "Keys and tokens"
-2. Under "User Access Tokens", click "Generate"
-3. Copy:
+2. Under "Authentication Tokens" → "Access Token and Secret"
+3. Click "Generate" (if not already generated)
+4. Copy:
    - Access Token → `TWITTER_ACCESS_TOKEN`
    - Access Token Secret → `TWITTER_ACCESS_TOKEN_SECRET`
+
+**Note**: These are OAuth 1.0a tokens, not the Bearer Token!
 
 ### 4. Verify App Permissions
 
