@@ -21,31 +21,30 @@ jobs:
       
       - name: Install dependencies
         run: |
-          pip install tweepy pyyaml
+          pip install requests pyyaml
       
       - name: Tweet test post
         env:
-          TWITTER_API_KEY: ${{ secrets.TWITTER_API_KEY }}
-          TWITTER_API_SECRET: ${{ secrets.TWITTER_API_SECRET }}
-          TWITTER_ACCESS_TOKEN: ${{ secrets.TWITTER_ACCESS_TOKEN }}
-          TWITTER_ACCESS_SECRET: ${{ secrets.TWITTER_ACCESS_SECRET }}
+          TWITTER_BEARER_TOKEN: ${{ secrets.TWITTER_BEARER_TOKEN }}
           POST_PATH: ${{ github.event.inputs.post_path }}
         run: |
           python3 << 'EOF'
           import os
           import yaml
-          import tweepy
+          import requests
+          import json
           
-          # Twitter API credentials
-          api_key = os.environ['TWITTER_API_KEY']
-          api_secret = os.environ['TWITTER_API_SECRET']
-          access_token = os.environ['TWITTER_ACCESS_TOKEN']
-          access_secret = os.environ['TWITTER_ACCESS_SECRET']
+          # Twitter API v2 bearer token
+          bearer_token = os.environ['TWITTER_BEARER_TOKEN']
           
-          # Authenticate
-          auth = tweepy.OAuthHandler(api_key, api_secret)
-          auth.set_access_token(access_token, access_secret)
-          api = tweepy.API(auth)
+          # API endpoint
+          tweet_url = "https://api.twitter.com/2/tweets"
+          
+          # Headers
+          headers = {
+              "Authorization": f"Bearer {bearer_token}",
+              "Content-Type": "application/json"
+          }
           
           # Get post path
           post_path = os.environ['POST_PATH']
@@ -86,8 +85,22 @@ jobs:
               
               # Post tweet
               try:
-                  api.update_status(tweet)
-                  print(f"\n✅ Successfully tweeted!")
+                  response = requests.post(
+                      tweet_url,
+                      headers=headers,
+                      json={"text": tweet}
+                  )
+                  
+                  if response.status_code == 201:
+                      tweet_data = response.json()
+                      tweet_id = tweet_data['data']['id']
+                      print(f"\n✅ Successfully tweeted!")
+                      print(f"Tweet ID: {tweet_id}")
+                      print(f"View at: https://twitter.com/furukama/status/{tweet_id}")
+                  else:
+                      print(f"\n❌ Error tweeting: {response.status_code}")
+                      print(f"Response: {response.text}")
+                      exit(1)
               except Exception as e:
                   print(f"\n❌ Error tweeting: {e}")
                   exit(1)
