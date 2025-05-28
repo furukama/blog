@@ -14,94 +14,45 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       
-      - name: Setup Python
-        uses: actions/setup-python@v4
+      - name: Extract post metadata
+        id: post_data
+        run: |
+          POST_PATH="${{ github.event.inputs.post_path }}"
+          
+          # Extract title and description
+          TITLE=$(grep -m1 "^title:" "$POST_PATH" | sed 's/title: *"*\(.*\)"*/\1/')
+          DESC=$(grep -m1 "^description:" "$POST_PATH" | sed 's/description: *"*\(.*\)"*/\1/')
+          
+          # Create URL
+          FILENAME=$(basename "$POST_PATH" .md)
+          URL="https://furukama.com/blog/$FILENAME/"
+          
+          # Compose tweet
+          TWEET="📝 $TITLE\n\n$DESC\n\n$URL"
+          
+          # Ensure under 280 chars
+          if [ ${#TWEET} -gt 280 ]; then
+            AVAILABLE=$((280 - ${#URL} - 10))
+            TEXT="📝 $TITLE - $DESC"
+            TEXT="${TEXT:0:$AVAILABLE}..."
+            TWEET="$TEXT\n\n$URL"
+          fi
+          
+          # Output for next step
+          echo "tweet<<EOF" >> $GITHUB_OUTPUT
+          echo -e "$TWEET" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+          
+          echo "Tweet preview (${#TWEET} chars):"
+          echo "========================================"
+          echo -e "$TWEET"
+          echo "========================================"
+      
+      - name: Send Tweet
+        uses: ethomson/send-tweet-action@v1
         with:
-          python-version: '3.11'
-      
-      - name: Install dependencies
-        run: |
-          pip install requests pyyaml
-      
-      - name: Tweet test post
-        env:
-          TWITTER_BEARER_TOKEN: ${{ secrets.TWITTER_BEARER_TOKEN }}
-          POST_PATH: ${{ github.event.inputs.post_path }}
-        run: |
-          python3 << 'EOF'
-          import os
-          import yaml
-          import requests
-          import json
-          
-          # Twitter API v2 bearer token
-          bearer_token = os.environ['TWITTER_BEARER_TOKEN']
-          
-          # API endpoint
-          tweet_url = "https://api.twitter.com/2/tweets"
-          
-          # Headers
-          headers = {
-              "Authorization": f"Bearer {bearer_token}",
-              "Content-Type": "application/json"
-          }
-          
-          # Get post path
-          post_path = os.environ['POST_PATH']
-          
-          print(f"Testing with post: {post_path}")
-          
-          with open(post_path, 'r') as f:
-              content = f.read()
-              
-          # Extract front matter
-          if content.startswith('---'):
-              front_matter = content.split('---')[1]
-              metadata = yaml.safe_load(front_matter)
-              
-              title = metadata.get('title', 'New post')
-              description = metadata.get('description', '')
-              
-              print(f"Title: {title}")
-              print(f"Description: {description}")
-              
-              # Create URL from filename
-              filename = os.path.basename(post_path).replace('.md', '')
-              url = f"https://furukama.com/blog/{filename}/"
-              
-              # Compose tweet
-              tweet = f"📝 {title}\n\n{description}\n\n{url}"
-              
-              # Ensure tweet is under 280 characters
-              if len(tweet) > 280:
-                  available_space = 280 - len(url) - 10  # 10 for newlines and emoji
-                  combined_text = f"📝 {title} - {description}"[:available_space] + "..."
-                  tweet = f"{combined_text}\n\n{url}"
-              
-              print(f"\nTweet preview ({len(tweet)} chars):")
-              print("="*40)
-              print(tweet)
-              print("="*40)
-              
-              # Post tweet
-              try:
-                  response = requests.post(
-                      tweet_url,
-                      headers=headers,
-                      json={"text": tweet}
-                  )
-                  
-                  if response.status_code == 201:
-                      tweet_data = response.json()
-                      tweet_id = tweet_data['data']['id']
-                      print(f"\n✅ Successfully tweeted!")
-                      print(f"Tweet ID: {tweet_id}")
-                      print(f"View at: https://twitter.com/furukama/status/{tweet_id}")
-                  else:
-                      print(f"\n❌ Error tweeting: {response.status_code}")
-                      print(f"Response: {response.text}")
-                      exit(1)
-              except Exception as e:
-                  print(f"\n❌ Error tweeting: {e}")
-                  exit(1)
-          EOF
+          status: ${{ steps.post_data.outputs.tweet }}
+          consumer-key: ${{ secrets.TWITTER_API_KEY }}
+          consumer-secret: ${{ secrets.TWITTER_API_SECRET }}
+          access-token: ${{ secrets.TWITTER_ACCESS_TOKEN }}
+          access-token-secret: ${{ secrets.TWITTER_ACCESS_SECRET }}

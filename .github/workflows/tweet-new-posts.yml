@@ -21,78 +21,44 @@ jobs:
           # Get added/modified blog posts
           NEW_POSTS=$(git diff --name-only HEAD~1 HEAD | grep '^content/blog/.*\.md$' | grep -v '_index.md' || true)
           echo "new_posts=$NEW_POSTS" >> $GITHUB_OUTPUT
+          
+          if [ -n "$NEW_POSTS" ]; then
+            echo "Found new posts: $NEW_POSTS"
+            
+            # Process first post only (to avoid spam)
+            FIRST_POST=$(echo "$NEW_POSTS" | head -n1)
+            echo "first_post=$FIRST_POST" >> $GITHUB_OUTPUT
+            
+            # Extract metadata
+            TITLE=$(grep -m1 "^title:" "$FIRST_POST" | sed 's/title: *"*\(.*\)"*/\1/')
+            DESC=$(grep -m1 "^description:" "$FIRST_POST" | sed 's/description: *"*\(.*\)"*/\1/')
+            
+            # Create URL
+            FILENAME=$(basename "$FIRST_POST" .md)
+            URL="https://furukama.com/blog/$FILENAME/"
+            
+            # Compose tweet
+            TWEET="📝 $TITLE\n\n$DESC\n\n$URL"
+            
+            # Ensure under 280 chars
+            if [ ${#TWEET} -gt 280 ]; then
+              AVAILABLE=$((280 - ${#URL} - 10))
+              TEXT="📝 $TITLE - $DESC"
+              TEXT="${TEXT:0:$AVAILABLE}..."
+              TWEET="$TEXT\n\n$URL"
+            fi
+            
+            echo "tweet<<EOF" >> $GITHUB_OUTPUT
+            echo -e "$TWEET" >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
+          fi
       
-      - name: Setup Python
+      - name: Send Tweet
         if: steps.check.outputs.new_posts != ''
-        uses: actions/setup-python@v4
+        uses: ethomson/send-tweet-action@v1
         with:
-          python-version: '3.11'
-      
-      - name: Install dependencies
-        if: steps.check.outputs.new_posts != ''
-        run: |
-          pip install requests pyyaml
-      
-      - name: Tweet new posts
-        if: steps.check.outputs.new_posts != ''
-        env:
-          TWITTER_BEARER_TOKEN: ${{ secrets.TWITTER_BEARER_TOKEN }}
-        run: |
-          python3 << 'EOF'
-          import os
-          import yaml
-          import requests
-          import json
-          
-          # Twitter API v2 configuration
-          bearer_token = os.environ['TWITTER_BEARER_TOKEN']
-          tweet_url = "https://api.twitter.com/2/tweets"
-          headers = {
-              "Authorization": f"Bearer {bearer_token}",
-              "Content-Type": "application/json"
-          }
-          
-          # Get new posts
-          new_posts = os.environ.get('new_posts', '').strip().split('\n')
-          
-          for post_path in new_posts:
-              if post_path and post_path.endswith('.md') and '_index' not in post_path:
-                  with open(post_path, 'r') as f:
-                      content = f.read()
-                      
-                  # Extract front matter
-                  if content.startswith('---'):
-                      front_matter = content.split('---')[1]
-                      metadata = yaml.safe_load(front_matter)
-                      
-                      title = metadata.get('title', 'New post')
-                      description = metadata.get('description', '')
-                      
-                      # Create URL from filename
-                      filename = os.path.basename(post_path).replace('.md', '')
-                      url = f"https://furukama.com/blog/{filename}/"
-                      
-                      # Compose tweet
-                      tweet = f"📝 {title}\n\n{description}\n\n{url}"
-                      
-                      # Ensure tweet is under 280 characters
-                      if len(tweet) > 280:
-                          available_space = 280 - len(url) - 10  # 10 for newlines and emoji
-                          combined_text = f"📝 {title} - {description}"[:available_space] + "..."
-                          tweet = f"{combined_text}\n\n{url}"
-                      
-                      # Post tweet
-                      try:
-                          response = requests.post(
-                              tweet_url,
-                              headers=headers,
-                              json={"text": tweet}
-                          )
-                          
-                          if response.status_code == 201:
-                              print(f"✅ Tweeted about: {title}")
-                          else:
-                              print(f"❌ Error tweeting: {response.status_code} - {response.text}")
-          EOF
-        env:
-          new_posts: ${{ steps.check.outputs.new_posts }}
+          status: ${{ steps.check.outputs.tweet }}
+          consumer-key: ${{ secrets.TWITTER_API_KEY }}
+          consumer-secret: ${{ secrets.TWITTER_API_SECRET }}
+          access-token: ${{ secrets.TWITTER_ACCESS_TOKEN }}
+          access-token-secret: ${{ secrets.TWITTER_ACCESS_SECRET }}
