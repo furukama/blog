@@ -1,0 +1,16 @@
+<a class="skip-link" href="#main-content">{{ i18n "skip-link" }}</a>
+
+<a href="{{ relURL .Site.Home.RelPermalink }}" class="title" style="display: flex; align-items: center; gap: 10px;">
+  <img src="https://1.gravatar.com/avatar/d9cc6da84abc3210d0041e0e1d923f81d622b70cb96e3f6bb45655f9f87154fb?size=512&d=initials" alt="Furukama" style="width: 60px; height: 60px; border-radius: 50%;">
+  <h1>{{ .Site.Title }}</h1>
+</a>
+<nav>{{- partial "nav.html" . -}}</nav>
+<p style="margin: 0.5em 0; font-size: 1.2em; font-weight: bold;">
+  Ben Koehler - Founder, Speaker, Coder
+  <span style="margin-left: 1em; font-weight: normal; font-size: 0.9em;">
+    <a href="https://github.com/{{ .Site.Params.social.github }}" target="_blank" rel="noopener">GitHub</a> |
+    <a href="https://x.com/{{ .Site.Params.social.x }}" target="_blank" rel="noopener">X</a> |
+    <a href="https://bsky.app/profile/{{ .Site.Params.social.bluesky }}" target="_blank" rel="noopener">Bluesky</a> |
+    <a href="https://linkedin.com/in/{{ .Site.Params.social.linkedin }}" target="_blank" rel="noopener">LinkedIn</a>
+  </span>
+</p>

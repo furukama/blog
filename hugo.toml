@@ -2,18 +2,22 @@ baseURL = 'https://furukama.com/'
 languageCode = 'en-us'
 title = 'Furukama'
 theme = 'bearcub'
+enableGitInfo = true
 
 [params]
   description = "Furukama"
-  author = "Benedikt Koehler"
   favicon = "/favicon.ico"
+  
+  [params.author]
+    name = "Benedikt Koehler"
+    email = "ben@furukama.com"
   
   # Social cards
   images = ["/images/social-card-default.png"]
   
   # Enable RSS
   [outputs]
-    home = ["HTML", "RSS", "JSON"]
+    home = ["HTML", "RSS"]
 
 # SEO optimizations
 [sitemap]
@@ -21,9 +25,18 @@ theme = 'bearcub'
   filename = 'sitemap.xml'
   priority = 0.5
 
+[[menu.main]]
+  name = "Blog"
+  url = "/blog/"
+  weight = 1
+
 [permalinks]
-  posts = "/:year/:month/:slug/"
+  blog = "/:year/:month/:slug/"
 
 # Open Graph and Twitter Cards
 [params.social]
   twitter = "@furukama"
+  github = "furukama"
+  x = "furukama"
+  bluesky = "furukama.bsky.social"
+  linkedin = "benediktkoehler"
