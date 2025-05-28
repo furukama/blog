@@ -1,0 +1,147 @@
+name: Fetch Social Media Comments
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'  # Every 30 minutes
+  workflow_dispatch:
+
+jobs:
+  fetch-comments:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: |
+          pip install tweepy atproto pyyaml requests
+      
+      - name: Fetch comments from social media
+        env:
+          # Twitter OAuth 1.0a
+          TWITTER_API_KEY: ${{ secrets.TWITTER_CLIENT_ID }}
+          TWITTER_API_SECRET: ${{ secrets.TWITTER_CLIENT_SECRET }}
+          TWITTER_ACCESS_TOKEN: ${{ secrets.TWITTER_ACCESS_TOKEN }}
+          TWITTER_ACCESS_SECRET: ${{ secrets.TWITTER_ACCESS_TOKEN_SECRET }}
+          # Bluesky
+          BLUESKY_HANDLE: ${{ secrets.BLUESKY_HANDLE }}
+          BLUESKY_PASSWORD: ${{ secrets.BLUESKY_PASSWORD }}
+        run: |
+          python3 << 'EOF'
+          import os
+          import yaml
+          import json
+          import tweepy
+          from atproto import Client as BlueskyClient
+          from datetime import datetime
+          import glob
+          
+          # Initialize clients
+          twitter = tweepy.Client(
+              consumer_key=os.environ.get('TWITTER_API_KEY'),
+              consumer_secret=os.environ.get('TWITTER_API_SECRET'),
+              access_token=os.environ.get('TWITTER_ACCESS_TOKEN'),
+              access_token_secret=os.environ.get('TWITTER_ACCESS_SECRET')
+          )
+          
+          bluesky = BlueskyClient()
+          if os.environ.get('BLUESKY_HANDLE') and os.environ.get('BLUESKY_PASSWORD'):
+              bluesky.login(
+                  os.environ['BLUESKY_HANDLE'],
+                  os.environ['BLUESKY_PASSWORD']
+              )
+          
+          all_comments = {}
+          
+          # Process all blog posts
+          for post_path in glob.glob('content/blog/*.md'):
+              if '_index.md' in post_path:
+                  continue
+                  
+              with open(post_path, 'r') as f:
+                  content = f.read()
+              
+              if not content.startswith('---'):
+                  continue
+                  
+              parts = content.split('---', 2)
+              metadata = yaml.safe_load(parts[1])
+              
+              if not metadata.get('social'):
+                  continue
+              
+              post_comments = []
+              
+              # Fetch Twitter replies
+              twitter_id = metadata['social'].get('twitter_id')
+              if twitter_id:
+                  try:
+                      # Get conversation thread
+                      tweets = twitter.search_recent_tweets(
+                          query=f"conversation_id:{twitter_id}",
+                          max_results=100,
+                          tweet_fields=['author_id', 'created_at', 'in_reply_to_user_id'],
+                          user_fields=['username', 'name']
+                      )
+                      
+                      if tweets.data:
+                          for tweet in tweets.data:
+                              if tweet.id != twitter_id:  # Exclude the original post
+                                  post_comments.append({
+                                      'id': f'twitter_{tweet.id}',
+                                      'platform': 'X',
+                                      'author': tweet.author_id,  # Would need user expansion
+                                      'text': tweet.text,
+                                      'created_at': tweet.created_at.isoformat(),
+                                      'url': f'https://twitter.com/i/status/{tweet.id}'
+                                  })
+                  except Exception as e:
+                      print(f"Error fetching Twitter replies for {twitter_id}: {e}")
+              
+              # Fetch Bluesky replies
+              bluesky_uri = metadata['social'].get('bluesky_uri')
+              if bluesky_uri:
+                  try:
+                      # Get thread
+                      thread = bluesky.get_post_thread(uri=bluesky_uri, depth=100)
+                      
+                      def extract_replies(post, comments_list):
+                          if hasattr(post, 'replies') and post.replies:
+                              for reply in post.replies:
+                                  comments_list.append({
+                                      'id': f'bluesky_{reply.post.uri.split("/")[-1]}',
+                                      'platform': 'Bluesky',
+                                      'author': reply.post.author.display_name or reply.post.author.handle,
+                                      'text': reply.post.record.text,
+                                      'created_at': reply.post.record.created_at,
+                                      'url': f'https://bsky.app/profile/{reply.post.author.handle}/post/{reply.post.uri.split("/")[-1]}'
+                                  })
+                                  extract_replies(reply, comments_list)
+                      
+                      extract_replies(thread.thread, post_comments)
+                  except Exception as e:
+                      print(f"Error fetching Bluesky replies for {bluesky_uri}: {e}")
+              
+              # Save comments for this post
+              if post_comments:
+                  filename = os.path.basename(post_path).replace('.md', '')
+                  all_comments[filename] = sorted(post_comments, key=lambda x: x['created_at'])
+          
+          # Save all comments to a data file
+          os.makedirs('data', exist_ok=True)
+          with open('data/comments.json', 'w') as f:
+              json.dump(all_comments, f, indent=2)
+          
+          print(f"Fetched comments for {len(all_comments)} posts")
+          EOF
+      
+      - name: Commit and push if changed
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add data/comments.json
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Update comments data" && git push)

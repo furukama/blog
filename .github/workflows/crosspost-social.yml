@@ -1,0 +1,159 @@
+name: Cross-post to Social Media
+
+on:
+  push:
+    paths:
+      - 'content/blog/*.md'
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      test_mode:
+        description: 'Test with existing post'
+        required: false
+        default: 'true'
+
+jobs:
+  crosspost:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 2
+      
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: |
+          pip install tweepy>=4.14.0 atproto>=0.0.48 pyyaml requests
+      
+      - name: Find post to share
+        id: find_post
+        run: |
+          if [ "${{ github.event.inputs.test_mode }}" = "true" ]; then
+            POST="content/blog/the-end-of-the-library.md"
+          else
+            POST=$(git diff --name-only HEAD~1 HEAD | grep '^content/blog/.*\.md$' | grep -v '_index.md' | head -n1 || true)
+          fi
+          
+          if [ -n "$POST" ]; then
+            echo "post_path=$POST" >> $GITHUB_OUTPUT
+            echo "Found post: $POST"
+          fi
+      
+      - name: Cross-post to Twitter and Bluesky
+        if: steps.find_post.outputs.post_path
+        env:
+          # Twitter OAuth 1.0a
+          TWITTER_API_KEY: ${{ secrets.TWITTER_CLIENT_ID }}
+          TWITTER_API_SECRET: ${{ secrets.TWITTER_CLIENT_SECRET }}
+          TWITTER_ACCESS_TOKEN: ${{ secrets.TWITTER_ACCESS_TOKEN }}
+          TWITTER_ACCESS_SECRET: ${{ secrets.TWITTER_ACCESS_TOKEN_SECRET }}
+          # Bluesky
+          BLUESKY_HANDLE: ${{ secrets.BLUESKY_HANDLE }}
+          BLUESKY_PASSWORD: ${{ secrets.BLUESKY_PASSWORD }}
+          POST_PATH: ${{ steps.find_post.outputs.post_path }}
+        run: |
+          python3 << 'EOF'
+          import os
+          import yaml
+          import json
+          import tweepy
+          from atproto import Client as BlueskyClient
+          
+          # Read post
+          post_path = os.environ['POST_PATH']
+          print(f"Processing: {post_path}")
+          
+          with open(post_path, 'r') as f:
+              content = f.read()
+          
+          # Extract metadata
+          if content.startswith('---'):
+              parts = content.split('---', 2)
+              metadata = yaml.safe_load(parts[1])
+              
+              title = metadata.get('title', 'New post')
+              description = metadata.get('description', '')
+              
+              # Create URL
+              filename = os.path.basename(post_path).replace('.md', '')
+              url = f"https://furukama.com/blog/{filename}/"
+              
+              # Compose post text
+              post_text = f"📝 {title}\n\n{description}\n\n{url}"
+              
+              # Ensure under 280 chars for Twitter
+              if len(post_text) > 280:
+                  available = 280 - len(url) - 10
+                  text = f"📝 {title} - {description}"[:available] + "..."
+                  post_text = f"{text}\n\n{url}"
+              
+              print(f"\nPost ({len(post_text)} chars):")
+              print("="*50)
+              print(post_text)
+              print("="*50)
+              
+              # Initialize results
+              tweet_id = None
+              bluesky_uri = None
+              
+              # Post to Twitter
+              try:
+                  twitter = tweepy.Client(
+                      consumer_key=os.environ['TWITTER_API_KEY'],
+                      consumer_secret=os.environ['TWITTER_API_SECRET'],
+                      access_token=os.environ['TWITTER_ACCESS_TOKEN'],
+                      access_token_secret=os.environ['TWITTER_ACCESS_SECRET']
+                  )
+                  
+                  response = twitter.create_tweet(text=post_text)
+                  tweet_id = response.data['id']
+                  print(f"\n✅ Twitter: https://twitter.com/furukama/status/{tweet_id}")
+              except Exception as e:
+                  print(f"\n❌ Twitter error: {e}")
+              
+              # Post to Bluesky
+              try:
+                  bluesky = BlueskyClient()
+                  bluesky.login(
+                      os.environ['BLUESKY_HANDLE'],
+                      os.environ['BLUESKY_PASSWORD']
+                  )
+                  
+                  # Create post with facets (link card)
+                  post = bluesky.send_post(
+                      text=post_text,
+                      facets=[{
+                          "index": {"byteStart": post_text.find(url), "byteEnd": post_text.find(url) + len(url)},
+                          "features": [{"$type": "app.bsky.richtext.facet#link", "uri": url}]
+                      }]
+                  )
+                  bluesky_uri = post.uri
+                  bluesky_rkey = post.uri.split('/')[-1]
+                  print(f"✅ Bluesky: https://bsky.app/profile/{os.environ['BLUESKY_HANDLE']}/post/{bluesky_rkey}")
+              except Exception as e:
+                  print(f"\n❌ Bluesky error: {e}")
+              
+              # Update post metadata with social links
+              if tweet_id or bluesky_uri:
+                  print("\n📝 Updating post with social media links...")
+                  
+                  # Add social media links to front matter
+                  metadata['social'] = metadata.get('social', {})
+                  if tweet_id:
+                      metadata['social']['twitter_id'] = tweet_id
+                  if bluesky_uri:
+                      metadata['social']['bluesky_uri'] = bluesky_uri
+                  
+                  # Rewrite file with updated metadata
+                  new_content = f"---\n{yaml.dump(metadata, default_flow_style=False)}---{parts[2]}"
+                  
+                  with open(post_path, 'w') as f:
+                      f.write(new_content)
+                  
+                  print("✅ Post metadata updated with social links")
+          EOF
