@@ -15,7 +15,7 @@ evolution from a) reading docs, how-tos, and manuals -> b) having context-sensit
 help -> c) being able to auto-complete methods, variable names and 
 automatically create boilerplate code -> d) having an AI write code for you
 line by line -> e) now just providing the specs of the thing you want to build
-(you can even let an LLM write this for you) and letting the system code. For
+(you can even [let an LLM write this for you](https://harper.blog/2025/05/08/basic-claude-code/)) and letting the system code. For
 GenX digital immigrants who grew up with the command line, it's still awesome to be 
 in the loop, but the next generation of coders (vibers?) will just let the system 
 do what it thinks is necessary.

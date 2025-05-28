@@ -8,7 +8,7 @@
     {{ $blueskyHandle := $.Site.Params.social.bluesky }}
     {{ $blueskyRkey := index (split $blueskyUri "/") (sub (len (split $blueskyUri "/")) 1) }}
     <a href="https://bsky.app/profile/{{ $blueskyHandle }}/post/{{ $blueskyRkey }}" target="_blank" rel="noopener" class="comment-button">
-      💬 Reply on Bluesky
+      💬 Comment on Bluesky
     </a>
     {{ end }}
   </div>
