@@ -33,10 +33,8 @@ enableGitInfo = true
 [permalinks]
   blog = "/:year/:month/:slug/"
 
-# Open Graph and Twitter Cards
+# Social Media
 [params.social]
-  twitter = "@furukama"
   github = "furukama"
-  x = "furukama"
   bluesky = "furukama.bsky.social"
   linkedin = "benediktkoehler"

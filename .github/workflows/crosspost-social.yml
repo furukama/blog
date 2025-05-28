@@ -1,4 +1,4 @@
-name: Cross-post to Social Media
+name: Post to Bluesky
 
 on:
   push:
@@ -28,7 +28,7 @@ jobs:
       
       - name: Install dependencies
         run: |
-          pip install tweepy>=4.14.0 atproto>=0.0.48 pyyaml requests
+          pip install atproto>=0.0.48 pyyaml requests
       
       - name: Find post to share
         id: find_post
@@ -44,14 +44,9 @@ jobs:
             echo "Found post: $POST"
           fi
       
-      - name: Cross-post to Twitter and Bluesky
+      - name: Post to Bluesky
         if: steps.find_post.outputs.post_path
         env:
-          # Twitter OAuth 1.0a
-          TWITTER_API_KEY: ${{ secrets.TWITTER_API_KEY }}
-          TWITTER_API_SECRET: ${{ secrets.TWITTER_API_SECRET }}
-          TWITTER_ACCESS_TOKEN: ${{ secrets.TWITTER_ACCESS_TOKEN }}
-          TWITTER_ACCESS_SECRET: ${{ secrets.TWITTER_ACCESS_TOKEN_SECRET }}
           # Bluesky
           BLUESKY_HANDLE: ${{ secrets.BLUESKY_HANDLE }}
           BLUESKY_PASSWORD: ${{ secrets.BLUESKY_PASSWORD }}
@@ -61,7 +56,6 @@ jobs:
           import os
           import yaml
           import json
-          import tweepy
           from atproto import Client as BlueskyClient
           
           # Read post
@@ -86,9 +80,9 @@ jobs:
               # Compose post text
               post_text = f"📝 {title}\n\n{description}\n\n{url}"
               
-              # Ensure under 280 chars for Twitter
-              if len(post_text) > 280:
-                  available = 280 - len(url) - 10
+              # Ensure reasonable length for Bluesky (300 chars)
+              if len(post_text) > 300:
+                  available = 300 - len(url) - 10
                   text = f"📝 {title} - {description}"[:available] + "..."
                   post_text = f"{text}\n\n{url}"
               
@@ -98,23 +92,7 @@ jobs:
               print("="*50)
               
               # Initialize results
-              tweet_id = None
               bluesky_uri = None
-              
-              # Post to Twitter
-              try:
-                  twitter = tweepy.Client(
-                      consumer_key=os.environ['TWITTER_API_KEY'],
-                      consumer_secret=os.environ['TWITTER_API_SECRET'],
-                      access_token=os.environ['TWITTER_ACCESS_TOKEN'],
-                      access_token_secret=os.environ['TWITTER_ACCESS_SECRET']
-                  )
-                  
-                  response = twitter.create_tweet(text=post_text)
-                  tweet_id = response.data['id']
-                  print(f"\n✅ Twitter: https://twitter.com/furukama/status/{tweet_id}")
-              except Exception as e:
-                  print(f"\n❌ Twitter error: {e}")
               
               # Post to Bluesky
               try:
@@ -142,15 +120,12 @@ jobs:
                   print(f"\n❌ Bluesky error: {e}")
               
               # Update post metadata with social links
-              if tweet_id or bluesky_uri:
+              if bluesky_uri:
                   print("\n📝 Updating post with social media links...")
                   
                   # Add social media links to front matter
                   metadata['social'] = metadata.get('social', {})
-                  if tweet_id:
-                      metadata['social']['twitter_id'] = tweet_id
-                  if bluesky_uri:
-                      metadata['social']['bluesky_uri'] = bluesky_uri
+                  metadata['social']['bluesky_uri'] = bluesky_uri
                   
                   # Rewrite file with updated metadata
                   new_content = f"---\n{yaml.dump(metadata, default_flow_style=False)}---{parts[2]}"

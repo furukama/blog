@@ -1,16 +1,9 @@
-{{ $twitterId := .Params.social.twitter_id }}
 {{ $blueskyUri := .Params.social.bluesky_uri }}
 
 <div id="comments-section" class="comments">
   <h3>Comments</h3>
   
   <div class="comment-buttons">
-    {{ if $twitterId }}
-    <a href="https://twitter.com/intent/tweet?in_reply_to={{ $twitterId }}" target="_blank" rel="noopener" class="comment-button">
-      💬 Reply on X
-    </a>
-    {{ end }}
-    
     {{ if $blueskyUri }}
     {{ $blueskyHandle := $.Site.Params.social.bluesky }}
     {{ $blueskyRkey := index (split $blueskyUri "/") (sub (len (split $blueskyUri "/")) 1) }}
@@ -41,7 +34,7 @@
 .comment-button {
   display: inline-block;
   padding: 0.5em 1em;
-  background: #1da1f2;
+  background: #0085ff;
   color: white;
   text-decoration: none;
   border-radius: 5px;

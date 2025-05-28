@@ -1,4 +1,4 @@
-name: Fetch Social Media Comments
+name: Fetch Bluesky Comments
 
 on:
   schedule:
@@ -18,15 +18,10 @@ jobs:
       
       - name: Install dependencies
         run: |
-          pip install tweepy atproto pyyaml requests
+          pip install atproto pyyaml requests
       
-      - name: Fetch comments from social media
+      - name: Fetch comments from Bluesky
         env:
-          # Twitter OAuth 1.0a
-          TWITTER_API_KEY: ${{ secrets.TWITTER_API_KEY }}
-          TWITTER_API_SECRET: ${{ secrets.TWITTER_API_SECRET }}
-          TWITTER_ACCESS_TOKEN: ${{ secrets.TWITTER_ACCESS_TOKEN }}
-          TWITTER_ACCESS_SECRET: ${{ secrets.TWITTER_ACCESS_TOKEN_SECRET }}
           # Bluesky
           BLUESKY_HANDLE: ${{ secrets.BLUESKY_HANDLE }}
           BLUESKY_PASSWORD: ${{ secrets.BLUESKY_PASSWORD }}
@@ -35,19 +30,11 @@ jobs:
           import os
           import yaml
           import json
-          import tweepy
           from atproto import Client as BlueskyClient
           from datetime import datetime
           import glob
           
-          # Initialize clients
-          twitter = tweepy.Client(
-              consumer_key=os.environ.get('TWITTER_API_KEY'),
-              consumer_secret=os.environ.get('TWITTER_API_SECRET'),
-              access_token=os.environ.get('TWITTER_ACCESS_TOKEN'),
-              access_token_secret=os.environ.get('TWITTER_ACCESS_SECRET')
-          )
-          
+          # Initialize Bluesky client
           bluesky = BlueskyClient()
           if os.environ.get('BLUESKY_HANDLE') and os.environ.get('BLUESKY_PASSWORD'):
               bluesky.login(
@@ -75,32 +62,6 @@ jobs:
                   continue
               
               post_comments = []
-              
-              # Fetch Twitter replies
-              twitter_id = metadata['social'].get('twitter_id')
-              if twitter_id:
-                  try:
-                      # Get conversation thread
-                      tweets = twitter.search_recent_tweets(
-                          query=f"conversation_id:{twitter_id}",
-                          max_results=100,
-                          tweet_fields=['author_id', 'created_at', 'in_reply_to_user_id'],
-                          user_fields=['username', 'name']
-                      )
-                      
-                      if tweets.data:
-                          for tweet in tweets.data:
-                              if tweet.id != twitter_id:  # Exclude the original post
-                                  post_comments.append({
-                                      'id': f'twitter_{tweet.id}',
-                                      'platform': 'X',
-                                      'author': tweet.author_id,  # Would need user expansion
-                                      'text': tweet.text,
-                                      'created_at': tweet.created_at.isoformat(),
-                                      'url': f'https://twitter.com/i/status/{tweet.id}'
-                                  })
-                  except Exception as e:
-                      print(f"Error fetching Twitter replies for {twitter_id}: {e}")
               
               # Fetch Bluesky replies
               bluesky_uri = metadata['social'].get('bluesky_uri')
