@@ -4,8 +4,8 @@ title = 'Furukama'
 theme = 'bearcub'
 
 [params]
-  description = "Your blog description for SEO"
-  author = "Your Name"
+  description = "Furukama"
+  author = "Benedikt Koehler"
   favicon = "/favicon.ico"
   
   # Social cards

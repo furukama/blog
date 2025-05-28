@@ -31,5 +31,5 @@ jobs:
         password: ${{ secrets.PASSWORD }}
         port: ${{ secrets.PORT }}
         source: "public/*"
-        target: "/www/htdocs/your-username/your-blog-directory"
+        target: "/www/htdocs/w00e1561/furukama"
         strip_components: 1
