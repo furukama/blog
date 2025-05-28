@@ -1,0 +1,29 @@
+baseURL = 'https://furukama.com/'
+languageCode = 'en-us'
+title = 'Furukama'
+theme = 'bearcub'
+
+[params]
+  description = "Your blog description for SEO"
+  author = "Your Name"
+  favicon = "/favicon.ico"
+  
+  # Social cards
+  images = ["/images/social-card-default.png"]
+  
+  # Enable RSS
+  [outputs]
+    home = ["HTML", "RSS", "JSON"]
+
+# SEO optimizations
+[sitemap]
+  changefreq = 'weekly'
+  filename = 'sitemap.xml'
+  priority = 0.5
+
+[permalinks]
+  posts = "/:year/:month/:slug/"
+
+# Open Graph and Twitter Cards
+[params.social]
+  twitter = "@furukama"
