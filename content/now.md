@@ -24,6 +24,9 @@ This is my [now page](https://nownownow.com/about), and if you have your own sit
 - Exploring how tools like [Claude Code](https://claude.ai/code) are changing software development
 - Writing about the end of traditional software libraries
 
+### Learning
+- Literary Chinese because you never know when this could come handy
+
 ### Looking Ahead
 - Looking into the future
 - Thinking about AGI timelines (2030 ± a few years)
