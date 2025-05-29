@@ -7,7 +7,7 @@ This is my [now page](https://nownownow.com/about), and if you have your own sit
 
 ## What I'm doing now
 
-*Updated May 29, 2025 from Berlin, Germany*
+*Updated May 29, 2025 from Munich, Germany*
 
 ### Reading
 - Reading a lot of books in our book club
