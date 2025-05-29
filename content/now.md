@@ -10,29 +10,24 @@ This is my [now page](https://nownownow.com/about), and if you have your own sit
 *Updated May 29, 2025 from Munich, Germany*
 
 ### Reading
-- Reading a lot of books in our book club
-- Currently exploring both fiction and non-fiction
+- Reading a lot of fascinating books in our book club
+- Currently reading: [Co-Intelligence by Ethan Mollick](https://www.goodreads.com/book/show/199258454-co-intelligence)
 - Always looking for recommendations
 
 ### Health & Fitness
 - Training for the [Centenarian Olympics](https://peterattiamd.com/outlive-excerpt-centenarian-olympics/)
-- Trying to stay healthy and lift weights
-- Building consistent workout habits
-- Focusing on strength training
+- Rucking and lifing heavy weights
 
 ### Technology
 - Working with AI Coding Agents
-- Exploring how tools like [Claude Code](https://claude.ai/code) are changing software development
-- Writing about the end of traditional software libraries
+- Exploring how AI is giving software back the magic
 
 ### Learning
-- Literary Chinese because you never know when this could come handy
+- Literary Chinese because you never know when this could come handy - using [Vogelsang's excellent introduction](https://www.degruyter.com/document/doi/10.1515/9783110687774/html)
 
 ### Looking Ahead
 - Writing a curriculum for kids in the Age of AGI
-- Looking into the future
-- Thinking about AGI timelines (2030 ± a few years)
-- Imagining how human-AI collaboration will evolve
+- Sociologist by profession - so I can't help to imagine how this changes everything
 
 ---
 
