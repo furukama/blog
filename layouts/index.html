@@ -1,10 +1,24 @@
 {{ define "main" }}
 {{ .Content }}
-<h2>Blogposts</h2>
+
+<h2>Posts</h2>
 {{ range first 5 (where .Site.RegularPages "Section" "posts") }}
   <p>
     <time datetime='{{ .Date.Format "2006-01-02" }}'>{{ .Date.Format "2006-01-02" }}</time>
     <a href="{{ .Permalink }}">{{ .Title }}</a>
   </p>
+{{ end }}
+
+<h2>Notes</h2>
+{{ $notes := where .Site.RegularPages "Section" "notes" }}
+{{ if $notes }}
+  {{ range first 5 $notes }}
+    <p>
+      <time datetime='{{ .Date.Format "2006-01-02" }}'>{{ .Date.Format "2006-01-02" }}</time>
+      <a href="{{ .Permalink }}">{{ .Title }}</a>
+    </p>
+  {{ end }}
+{{ else }}
+  <p>No notes yet.</p>
 {{ end }}
 {{ end }}
