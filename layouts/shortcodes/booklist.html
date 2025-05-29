@@ -1,0 +1,24 @@
+{{ $title := .Get "title" }}
+{{ $date := .Get "date" }}
+{{ $url := .Get "url" }}
+
+<p class="book-list-item">
+    {{ if $date }}
+        <span class="book-date">{{ $date }}</span> -
+    {{ end }}
+    {{ if $url }}
+        <a href="{{ $url }}" target="_blank" rel="noopener">{{ $title }}</a>
+    {{ else }}
+        {{ $title }}
+    {{ end }}
+</p>
+
+<style>
+.book-list-item {
+    margin: 0.5em 0;
+}
+
+.book-date {
+    color: #666;
+}
+</style>
