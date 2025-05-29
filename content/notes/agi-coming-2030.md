@@ -4,4 +4,4 @@ date: 2025-05-29T00:45:00+02:00
 draft: false
 ---
 
-https://www.youtube.com/watch?v=KUzuQpMdQZo
+{{< youtube KUzuQpMdQZo >}}
