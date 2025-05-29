@@ -12,6 +12,8 @@ bsky: ""
 
 After spending days (and sleepless nights) coding with my AI assistant Claude Code,
 I still can't believe this kind of tool we (as humanity) have created.
+
+{{< video src="https://t.gifs.bsky.app/SoL4eCQ5skEAAAP3/anime-sunshine.webm" maxWidth="400px" caption="Me discovering AI coding assistants" >}}
 Of course, in the realm of coding you can describe it as a quasi-natural
 evolution from a) reading docs, how-tos, and manuals -> b) having context-sensitive
 help -> c) being able to auto-complete methods, variable names and 

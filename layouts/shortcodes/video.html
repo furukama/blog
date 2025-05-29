@@ -1,0 +1,15 @@
+{{ $src := .Get "src" }}
+{{ $width := .Get "width" | default "100%" }}
+{{ $maxWidth := .Get "maxWidth" | default "600px" }}
+{{ $caption := .Get "caption" }}
+
+<figure class="video-container" style="margin: 1.5em 0;">
+    <video autoplay loop muted playsinline style="width: {{ $width }}; max-width: {{ $maxWidth }}; display: block; margin: 0 auto;">
+        <source src="{{ $src }}" type="video/webm">
+        <source src="{{ $src | replaceRE ".webm$" ".mp4" }}" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+    {{ if $caption }}
+    <figcaption style="text-align: center; font-style: italic; color: #666; margin-top: 0.5em;">{{ $caption }}</figcaption>
+    {{ end }}
+</figure>
