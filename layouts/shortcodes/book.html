@@ -1,0 +1,79 @@
+{{ $title := .Get "title" }}
+{{ $author := .Get "author" }}
+{{ $goodreads := .Get "goodreads" }}
+{{ $cover := .Get "cover" }}
+{{ $notes := .Get "notes" }}
+
+<div class="book-entry">
+    <div class="book-cover">
+        {{ if $cover }}
+        <img src="{{ $cover }}" alt="{{ $title }} cover" />
+        {{ end }}
+    </div>
+    <div class="book-details">
+        <h3>
+            {{ if $goodreads }}
+            <a href="{{ $goodreads }}" target="_blank" rel="noopener">{{ $title }}</a>
+            {{ else }}
+            {{ $title }}
+            {{ end }}
+        </h3>
+        <p class="book-author">by {{ $author }}</p>
+        {{ if $notes }}
+        <div class="book-notes">
+            <p>{{ $notes }}</p>
+        </div>
+        {{ end }}
+    </div>
+</div>
+
+<style>
+.book-entry {
+    display: flex;
+    gap: 2em;
+    margin: 2em 0;
+    padding: 1.5em;
+    background: #f9f9f9;
+    border-radius: 8px;
+}
+
+.book-cover {
+    flex-shrink: 0;
+}
+
+.book-cover img {
+    width: 120px;
+    height: auto;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.book-details {
+    flex: 1;
+}
+
+.book-details h3 {
+    margin-top: 0;
+}
+
+.book-author {
+    color: #666;
+    font-style: italic;
+    margin: 0.5em 0;
+}
+
+.book-notes {
+    margin-top: 1em;
+    line-height: 1.6;
+}
+
+@media (max-width: 600px) {
+    .book-entry {
+        flex-direction: column;
+    }
+    
+    .book-cover img {
+        width: 100px;
+    }
+}
+</style>
