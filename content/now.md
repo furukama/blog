@@ -11,7 +11,7 @@ This is my [now page](https://nownownow.com/about), and if you have your own sit
 
 ### Reading
 - Reading a lot of fascinating books in our book club
-- Currently reading: [Co-Intelligence by Ethan Mollick](https://www.goodreads.com/book/show/199258454-co-intelligence)
+- Currently reading: [Co-Intelligence by Ethan Mollick](https://www.goodreads.com/book/show/198678736-co-intelligence)
 - Always looking for recommendations
 
 ### Health & Fitness
