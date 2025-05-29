@@ -3,7 +3,7 @@ name: Post to Bluesky
 on:
   push:
     paths:
-      - 'content/post/*.md'
+      - 'content/posts/*.md'
     branches:
       - main
   workflow_dispatch:
@@ -34,9 +34,9 @@ jobs:
         id: find_post
         run: |
           if [ "${{ github.event.inputs.test_mode }}" = "true" ]; then
-            POST="content/post/the-end-of-the-library.md"
+            POST="content/posts/the-end-of-the-library.md"
           else
-            POST=$(git diff --name-only HEAD~1 HEAD | grep '^content/post/.*\.md$' | grep -v '_index.md' | head -n1 || true)
+            POST=$(git diff --name-only HEAD~1 HEAD | grep '^content/posts/.*\.md$' | grep -v '_index.md' | head -n1 || true)
           fi
           
           if [ -n "$POST" ]; then

@@ -26,11 +26,12 @@ enableGitInfo = true
   priority = 0.5
 
 [[menu.main]]
-  name = "Blog"
-  url = "/post/"
+  name = "All Posts"
+  url = "/posts/"
   weight = 1
 
 [permalinks]
+  posts = "/:year/:month/:day/:title/"
   post = "/:year/:month/:day/:title/"
   archives = "/:year/:month/:day/:title/"
 
