@@ -20,7 +20,7 @@ date: 2025-05-29T02:00:00+02:00
 ## Reading List
 
 <!-- For books without full details, you can use the simple goodreads shortcode: -->
-<!-- {{< goodreads "https://www.goodreads.com/book/show/..." "Your notes here" >}} -->
+<!-- Example: goodreads shortcode with URL and notes -->
 
 ---
 
