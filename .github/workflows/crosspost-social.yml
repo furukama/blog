@@ -33,7 +33,7 @@ jobs:
       - name: Find post to share
         id: find_post
         run: |
-          if [ "${{ github.event.inputs.test_mode }}" = "true" ]; then
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ github.event.inputs.test_mode }}" = "true" ]; then
             POST="content/posts/the-end-of-the-library.md"
           else
             POST=$(git diff --name-only HEAD~1 HEAD | grep '^content/posts/.*\.md$' | grep -v '_index.md' | head -n1 || true)
@@ -75,7 +75,7 @@ jobs:
               
               # Create URL
               filename = os.path.basename(post_path).replace('.md', '')
-              url = f"https://furukama.com/post/{filename}/"
+              url = f"https://furukama.com/posts/{filename}/"
               
               # Compose post text
               post_text = f"📝 {title}\n\n{description}\n\n{url}"
