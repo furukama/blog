@@ -1,4 +1,5 @@
 {{ $title := .Get "title" }}
+{{ $author := .Get "author" }}
 {{ $date := .Get "date" }}
 {{ $url := .Get "url" }}
 
@@ -7,9 +8,9 @@
         <span class="book-date">{{ $date }}</span> -
     {{ end }}
     {{ if $url }}
-        <a href="{{ $url }}" target="_blank" rel="noopener">{{ $title }}</a>
+        <a href="{{ $url }}" target="_blank" rel="noopener">{{ $title }} by {{ $author }}</a>
     {{ else }}
-        {{ $title }}
+        {{ $title }} by {{ $author }}
     {{ end }}
 </p>
 
