@@ -1,0 +1,8 @@
+#!/bin/bash
+# Pre-commit hook to update reading page social image
+
+# Only run if reading.md is being committed
+if git diff --cached --name-only | grep -q "content/reading.md"; then
+    echo "📚 Updating reading page social image..."
+    ./scripts/update-reading-image.sh
+fi

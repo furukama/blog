@@ -1,0 +1,42 @@
+name: Update Reading Page Social Image
+
+on:
+  push:
+    paths:
+      - 'content/reading.md'
+    branches:
+      - main
+
+jobs:
+  update-image:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Extract and update book cover
+        run: |
+          # Extract the first book cover URL from the reading.md file
+          COVER_URL=$(grep -m1 'cover="' content/reading.md | sed -n 's/.*cover="\([^"]*\)".*/\1/p')
+          
+          if [ -n "$COVER_URL" ]; then
+            echo "Found book cover: $COVER_URL"
+            
+            # Update the images field in the front matter
+            sed -i '/^images:/s|images:.*|images: ["'"$COVER_URL"'"]|' content/reading.md
+            
+            # Check if file was modified
+            if git diff --quiet content/reading.md; then
+              echo "No changes needed"
+            else
+              echo "Updated social image to: $COVER_URL"
+              git config --local user.email "action@github.com"
+              git config --local user.name "GitHub Action"
+              git add content/reading.md
+              git commit -m "Auto-update reading page social image to current book cover"
+              git push
+            fi
+          else
+            echo "No book cover found in reading.md"
+          fi
