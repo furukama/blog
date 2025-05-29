@@ -23,7 +23,7 @@ This is my [now page](https://nownownow.com/about), and if you have your own sit
 - Exploring how AI is giving software back the magic
 
 ### Learning
-- Literary Chinese because you never know when this could come handy - using [Vogelsang's excellent introduction](https://www.degruyter.com/document/doi/10.1515/9783110687774/html)
+- Literary Chinese because you never know when this could come handy - using [Vogelsang's](https://www.aai.uni-hamburg.de/china/personen/vogelsang.html) excellent introduction
 
 ### Looking Ahead
 - Writing a curriculum for kids in the Age of AGI
