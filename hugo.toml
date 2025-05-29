@@ -32,6 +32,8 @@ enableGitInfo = true
 
 [permalinks]
   blog = "/:year/:month/:slug/"
+  post = "/:year/:month/:day/:title/"
+  archives = "/:year/:month/:day/:title/"
 
 # Social Media
 [params.social]
