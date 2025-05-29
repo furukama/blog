@@ -2,7 +2,7 @@
 const API_BASE_URL = "https://public.api.bsky.app/xrpc";
 const BSKY_WEB_URL = "https://bsky.app";
 const RESOLVE_HANDLE_URL =
-    "https://bsky.social/xrpc/com.atproto.identity.resolveHandle";
+    "https://public.api.bsky.app/xrpc/com.atproto.identity.resolveHandle";
 
 // Types and validation
 class ValidationError extends Error {
@@ -193,12 +193,16 @@ class BlueskyCommentsWidget {
 
     async initialize() {
         const bskyWebUrl = this.container.getAttribute("data-bsky-uri");
+        console.log("Bluesky URL:", bskyWebUrl);
+        
         if (!bskyWebUrl) {
             throw new ValidationError("Missing data-bsky-uri attribute");
         }
 
         try {
             const atUri = await this.extractAtUri(bskyWebUrl);
+            console.log("AT URI:", atUri);
+            
             const thread = await BlueskyAPI.getPostThread(atUri);
             await this.render(thread);
         } catch (error) {

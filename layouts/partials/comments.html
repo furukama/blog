@@ -11,7 +11,8 @@
 {{ end }}
 
 {{ if .Params.bsky }}
-<div id="comments-section" data-bsky-uri="https://bsky.app/profile/furukama.bsky.social/post/{{ index (split .Params.bsky "/") (sub (len (split .Params.bsky "/")) 1) }}"></div>
+{{ $postId := index (split .Params.bsky "/") (sub (len (split .Params.bsky "/")) 1) }}
+<div id="comments-section" data-bsky-uri="https://bsky.app/profile/furukama.bsky.social/post/{{ $postId }}"></div>
 <script src="/js/bluesky_comments.js"></script>
 <style>
 .bsky-comment {
