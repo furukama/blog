@@ -26,13 +26,24 @@ enableGitInfo = true
   priority = 0.5
 
 [[menu.main]]
+  name = "Home"
+  url = "/"
+  weight = 1
+
+[[menu.main]]
   name = "Posts"
   url = "/posts/"
-  weight = 1
+  weight = 2
+
+[[menu.main]]
+  name = "Notes"
+  url = "/notes/"
+  weight = 3
 
 [permalinks]
   posts = "/:year/:month/:day/:title/"
   post = "/:year/:month/:day/:title/"
+  notes = "/:year/:month/:day/:title/"
   archives = "/:year/:month/:day/:title/"
 
 # Social Media
