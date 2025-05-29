@@ -29,6 +29,7 @@ This is my [now page](https://nownownow.com/about), and if you have your own sit
 - Literary Chinese because you never know when this could come handy
 
 ### Looking Ahead
+- Writing a curriculum for kids in the Age of AGI
 - Looking into the future
 - Thinking about AGI timelines (2030 ± a few years)
 - Imagining how human-AI collaboration will evolve
