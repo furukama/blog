@@ -1,6 +1,7 @@
 ---
 title: "Now"
 date: 2025-05-29T01:15:00+02:00
+description: "What I'm doing now - reading, lifting weights, working with AI, learning Literary Chinese, and looking into the future from Munich."
 ---
 
 This is my [now page](https://nownownow.com/about), and if you have your own site, [you should make one](https://nownownow.com/about), too.
