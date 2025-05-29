@@ -3,30 +3,31 @@ title: "Now"
 date: 2025-05-29T01:15:00+02:00
 ---
 
-This is my [now page](https://nownownow.com/about), inspired by [Derek Sivers](https://sive.rs/now).
+This is my [now page](https://nownownow.com/about), and if you have your own site, [you should make one](https://nownownow.com/about), too.
 
 ## What I'm doing now
 
 *Updated May 29, 2025 from Berlin, Germany*
 
-### Work
-- Running [Datalion](https://datalion.com) as founder
-- Speaking at conferences about AI and data
-- Coding with AI assistants like Claude Code
+### Reading
+- Reading a lot of books in our book club
+- Currently exploring both fiction and non-fiction
+- Always looking for recommendations
 
-### Current Focus
-- Exploring how AI is transforming software development
-- Writing about the future of software libraries and AI coding
-- Building tools and workflows with LLMs
+### Health & Fitness
+- Trying to stay healthy and lift weights
+- Building consistent workout habits
+- Focusing on strength training
 
-### Learning
-- How AI coding assistants are making traditional software libraries obsolete
-- The implications of AGI coming around 2030
-- New patterns for human-AI collaboration in coding
+### Technology
+- Working with AI Coding Agents
+- Exploring how tools like [Claude Code](https://claude.ai/code) are changing software development
+- Writing about the end of traditional software libraries
 
-### Personal
-- Living in Berlin
-- Connecting with the tech community on [Bluesky](https://bsky.app/profile/furukama.bsky.social)
+### Looking Ahead
+- Looking into the future
+- Thinking about AGI timelines (2030 ± a few years)
+- Imagining how human-AI collaboration will evolve
 
 ---
 
