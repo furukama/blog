@@ -6,7 +6,7 @@ description: "Why AI coding assistants like Claude Code are making traditional s
 tags: ["ai", "coding", "libraries", "software-engineering"]
 categories: ["technology"]
 images: ["/images/posts/the-end-of-the-library/social-card.png"]
-bsky: ""
+bsky: "https://bsky.app/profile/furukama.bsky.social/post/3lqclziuao22y"
 ---
 
 After spending days (and sleepless nights) coding with my AI assistant [Claude Code](https://claude.ai/code),
