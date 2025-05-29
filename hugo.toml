@@ -1,13 +1,11 @@
 baseURL = 'https://furukama.com/'
-languageCode = 'en-us'
-title = "Furukama's Blog"
 theme = 'bearcub'
 enableGitInfo = true
 canonifyURLs = true
 enableRobotsTXT = true
 timeout = "60s"
 defaultContentLanguage = "en"
-author = "Ben Koehler"
+defaultContentLanguageInSubdir = false
 disableKinds = []
 timeZone = "Europe/Berlin"
 

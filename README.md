@@ -95,6 +95,20 @@ Social cards are automatically generated if `generateSocialCard = true` in `hugo
 images: ["/images/posts/my-post/custom-social-card.png"]
 ```
 
+### Multilingual content
+
+The site supports English (default) and German. To create German content:
+
+```bash
+# German blog post
+hugo new de/posts/mein-neuer-beitrag.md
+
+# German note
+hugo new de/notes/meine-notiz.md
+```
+
+Language switcher will appear automatically when content exists in multiple languages.
+
 ## Features
 
 - Dynamic social card generation

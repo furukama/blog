@@ -1,0 +1,52 @@
+# ABOUTME: Language configuration for multilingual support
+# ABOUTME: Defines English as default and German as secondary language
+
+[en]
+  languageCode = "en"
+  languageName = "English"
+  weight = 1
+  title = "Furukama's Blog"
+  [en.params]
+    description = "Furukama"
+    dateFormat = "January 2, 2006"
+    [en.params.author]
+      name = "Benedikt Koehler"
+      email = "ben@furukama.com"
+
+[de]
+  languageCode = "de"
+  languageName = "Deutsch"
+  weight = 2
+  title = "Furukamas Blog"
+  [de.params]
+    description = "Furukama"
+    dateFormat = "2. January 2006"
+    [de.params.author]
+      name = "Benedikt Köhler"
+      email = "ben@furukama.com"
+
+# Menu translations
+[[de.menu.main]]
+  name = "Startseite"
+  url = "/"
+  weight = 1
+
+[[de.menu.main]]
+  name = "Beiträge"
+  url = "/posts/"
+  weight = 2
+
+[[de.menu.main]]
+  name = "Notizen"
+  url = "/notes/"
+  weight = 3
+
+[[de.menu.main]]
+  name = "Jetzt"
+  url = "/now/"
+  weight = 4
+
+[[de.menu.main]]
+  name = "Lesen"
+  url = "/reading/"
+  weight = 5
