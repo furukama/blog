@@ -94,30 +94,36 @@ jobs:
               # Initialize results
               bluesky_uri = None
               
-              # Post to Bluesky
-              try:
-                  if os.environ.get('BLUESKY_HANDLE') and os.environ.get('BLUESKY_PASSWORD'):
-                      bluesky = BlueskyClient()
-                      bluesky.login(
-                          os.environ['BLUESKY_HANDLE'],
-                          os.environ['BLUESKY_PASSWORD']
-                      )
-                      
-                      # Create post with facets (link card)
-                      post = bluesky.send_post(
-                          text=post_text,
-                          facets=[{
-                              "index": {"byteStart": post_text.find(url), "byteEnd": post_text.find(url) + len(url)},
-                              "features": [{"$type": "app.bsky.richtext.facet#link", "uri": url}]
-                          }]
-                      )
-                      bluesky_uri = post.uri
-                      bluesky_rkey = post.uri.split('/')[-1]
-                      print(f"✅ Bluesky: https://bsky.app/profile/{os.environ['BLUESKY_HANDLE']}/post/{bluesky_rkey}")
-                  else:
-                      print("⚠️  Bluesky: No credentials provided, skipping")
-              except Exception as e:
-                  print(f"\n❌ Bluesky error: {e}")
+              # Check if already posted to Bluesky
+              existing_bluesky_uri = metadata.get('social', {}).get('bluesky_uri')
+              if existing_bluesky_uri:
+                  print("✅ Already posted to Bluesky, skipping")
+                  bluesky_uri = existing_bluesky_uri
+              else:
+                  # Post to Bluesky
+                  try:
+                      if os.environ.get('BLUESKY_HANDLE') and os.environ.get('BLUESKY_PASSWORD'):
+                          bluesky = BlueskyClient()
+                          bluesky.login(
+                              os.environ['BLUESKY_HANDLE'],
+                              os.environ['BLUESKY_PASSWORD']
+                          )
+                          
+                          # Create post with facets (link card)
+                          post = bluesky.send_post(
+                              text=post_text,
+                              facets=[{
+                                  "index": {"byteStart": post_text.find(url), "byteEnd": post_text.find(url) + len(url)},
+                                  "features": [{"$type": "app.bsky.richtext.facet#link", "uri": url}]
+                              }]
+                          )
+                          bluesky_uri = post.uri
+                          bluesky_rkey = post.uri.split('/')[-1]
+                          print(f"✅ Bluesky: https://bsky.app/profile/{os.environ['BLUESKY_HANDLE']}/post/{bluesky_rkey}")
+                      else:
+                          print("⚠️  Bluesky: No credentials provided, skipping")
+                  except Exception as e:
+                      print(f"\n❌ Bluesky error: {e}")
               
               # Update post metadata with social links
               if bluesky_uri:

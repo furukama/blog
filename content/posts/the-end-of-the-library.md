@@ -5,11 +5,11 @@ draft: false
 description: "Why AI coding assistants like Claude Code are making traditional software libraries obsolete - a firsthand experience"
 tags: ["ai", "coding", "libraries", "software-engineering"]
 categories: ["technology"]
-images: ["https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=1200&h=630&fit=crop&q=80"]
+images: ["/images/posts/the-end-of-the-library/social-card.png"]
 bsky: ""
 ---
 
-After spending days (and sleepless nights) coding with my AI assistant Claude Code,
+After spending days (and sleepless nights) coding with my AI assistant [Claude Code](https://claude.ai/code),
 I still can't believe this kind of tool we (as humanity) have created.
 
 {{< video src="https://t.gifs.bsky.app/SoL4eCQ5skEAAAP3/anime-sunshine.webm" maxWidth="400px" caption="We may not need this anymore" >}}
