@@ -85,7 +85,38 @@ Edit `content/reading.md`. Use the custom book shortcodes:
 
 1. Place images in `static/images/`
 2. For post-specific images: `static/images/posts/post-name/`
-3. Reference in markdown: `![Alt text](/images/posts/post-name/image.png)`
+3. For note-specific images: `static/images/notes/note-name/`
+4. Reference in markdown: `![Alt text](/images/posts/post-name/image.png)`
+
+#### Advanced image usage
+
+**Centered image with caption:**
+```markdown
+{{< figure src="/images/notes/note-name/image.png" 
+    alt="Image description" 
+    caption="Your caption text here" 
+    width="400" 
+    class="center" >}}
+```
+
+**Image with link:**
+```markdown
+{{< figure src="/images/posts/post-name/image.png" 
+    alt="Image description" 
+    link="https://example.com" 
+    target="_blank" >}}
+```
+
+**Image with link and caption, centered:**
+```markdown
+{{< figure src="/images/notes/note-name/image.png" 
+    alt="Image description" 
+    caption="Click to visit the site" 
+    link="https://example.com" 
+    target="_blank"
+    width="500"
+    class="center" >}}
+```
 
 ### Social cards
 
