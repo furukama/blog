@@ -1,0 +1,12 @@
+{{ define "main" }}
+<h1>All Posts</h1>
+{{ range .Pages.ByDate.Reverse }}
+  <article class="post-item">
+    <time datetime='{{ .Date.Format "2006-01-02" }}'>{{ .Date.Format "2006-01-02" }}</time>
+    <a href="{{ .Permalink }}">{{ .Title }}</a>
+    {{ if .Description }}
+    <p class="post-description">{{ .Description }}</p>
+    {{ end }}
+  </article>
+{{ end }}
+{{ end }}

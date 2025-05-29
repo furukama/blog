@@ -26,7 +26,7 @@ enableGitInfo = true
   priority = 0.5
 
 [[menu.main]]
-  name = "All Posts"
+  name = "Posts"
   url = "/posts/"
   weight = 1
 
