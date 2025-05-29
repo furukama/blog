@@ -3,6 +3,7 @@
 {{ $goodreads := .Get "goodreads" }}
 {{ $cover := .Get "cover" }}
 {{ $notes := .Get "notes" }}
+{{ $rating := .Get "rating" }}
 
 <div class="book-entry">
     <div class="book-cover">
@@ -18,7 +19,12 @@
             {{ $title }}
             {{ end }}
         </h3>
-        <p class="book-author">by {{ $author }}</p>
+        <p class="book-author">
+            by {{ $author }}
+            {{ if $rating }}
+            <span class="book-rating">★ {{ $rating }}/5</span>
+            {{ end }}
+        </p>
         {{ if $notes }}
         <div class="book-notes">
             <p>{{ $notes }}</p>
@@ -65,6 +71,12 @@
 .book-notes {
     margin-top: 1em;
     line-height: 1.6;
+}
+
+.book-rating {
+    color: #f39c12;
+    margin-left: 1em;
+    font-weight: normal;
 }
 
 @media (max-width: 600px) {

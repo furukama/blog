@@ -2,6 +2,7 @@
 {{ $author := .Get "author" }}
 {{ $date := .Get "date" }}
 {{ $url := .Get "url" }}
+{{ $rating := .Get "rating" }}
 
 <p class="book-list-item">
     {{ if $date }}
@@ -12,6 +13,9 @@
     {{ else }}
         {{ $title }} by {{ $author }}
     {{ end }}
+    {{ if $rating }}
+        <span class="book-rating">({{ $rating }}/5)</span>
+    {{ end }}
 </p>
 
 <style>
@@ -21,5 +25,10 @@
 
 .book-date {
     color: #666;
+}
+
+.book-rating {
+    color: #f39c12;
+    margin-left: 0.5em;
 }
 </style>
