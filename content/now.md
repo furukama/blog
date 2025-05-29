@@ -15,7 +15,7 @@ This is my [now page](https://nownownow.com/about), and if you have your own sit
 - Always looking for recommendations
 
 ### Health & Fitness
-- Training for the [Centenarian Olympics](https://peterattiamd.com/outlive-excerpt-centenarian-olympics/)
+- Training for the [Centenarian Decathlon](https://peterattiamd.com/how-to-train-for-the-centenarian-decathlon/)
 - Rucking and lifing heavy weights
 
 ### Technology
