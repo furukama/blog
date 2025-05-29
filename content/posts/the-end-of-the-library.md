@@ -7,7 +7,7 @@ tags: ["ai", "coding", "libraries", "software-engineering"]
 categories: ["technology"]
 image: "/images/posts/the-end-of-the-library/social-card.png"
 images: ["/images/posts/the-end-of-the-library/social-card.png"]
-bsky: "at://did:plc:rj5fmgrcrbge4xurofxy5jpe/app.bsky.feed.post/3lqbf5dq3u522"
+bsky: ""
 ---
 
 After spending days (and sleepless nights) coding with my AI assistant Claude Code,
