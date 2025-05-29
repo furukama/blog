@@ -7,11 +7,6 @@ on:
     branches:
       - main
   workflow_dispatch:
-    inputs:
-      test_mode:
-        description: 'Test with existing post'
-        required: false
-        default: 'true'
 
 jobs:
   crosspost:
@@ -33,11 +28,7 @@ jobs:
       - name: Find post to share
         id: find_post
         run: |
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ github.event.inputs.test_mode }}" = "true" ]; then
-            POST="content/posts/the-end-of-the-library.md"
-          else
-            POST=$(git diff --name-only HEAD~1 HEAD | grep '^content/posts/.*\.md$' | grep -v '_index.md' | head -n1 || true)
-          fi
+          POST=$(git diff --name-only HEAD~1 HEAD | grep '^content/posts/.*\.md$' | grep -v '_index.md' | head -n1 || true)
           
           if [ -n "$POST" ]; then
             echo "post_path=$POST" >> $GITHUB_OUTPUT
@@ -96,9 +87,10 @@ jobs:
               
               # Check if already posted to Bluesky
               existing_bluesky_uri = metadata.get('social', {}).get('bluesky_uri')
-              if existing_bluesky_uri:
+              existing_bsky_link = metadata.get('bsky')
+              if existing_bluesky_uri or existing_bsky_link:
                   print("✅ Already posted to Bluesky, skipping")
-                  bluesky_uri = existing_bluesky_uri
+                  bluesky_uri = existing_bluesky_uri or existing_bsky_link
               else:
                   # Post to Bluesky
                   try:
@@ -126,12 +118,12 @@ jobs:
                       print(f"\n❌ Bluesky error: {e}")
               
               # Update post metadata with social links
-              if bluesky_uri:
+              if bluesky_uri and not existing_bsky_link:
                   print("\n📝 Updating post with social media links...")
                   
-                  # Add social media links to front matter
-                  metadata['social'] = metadata.get('social', {})
-                  metadata['social']['bluesky_uri'] = bluesky_uri
+                  # Add Bluesky link to front matter
+                  bluesky_rkey = bluesky_uri.split('/')[-1]
+                  metadata['bsky'] = f"https://bsky.app/profile/{os.environ['BLUESKY_HANDLE']}/post/{bluesky_rkey}"
                   
                   # Rewrite file with updated metadata
                   new_content = f"---\n{yaml.dump(metadata, default_flow_style=False)}---{parts[2]}"
@@ -139,5 +131,5 @@ jobs:
                   with open(post_path, 'w') as f:
                       f.write(new_content)
                   
-                  print("✅ Post metadata updated with social links")
+                  print("✅ Post metadata updated with Bluesky link")
           EOF
