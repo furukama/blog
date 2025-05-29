@@ -1,0 +1,24 @@
+<!-- ABOUTME: This file adds explicit Twitter/X card meta tags to ensure proper link previews -->
+<!-- ABOUTME: It overrides theme defaults by being placed in the custom_head partial -->
+
+<!-- Twitter Card Meta Tags -->
+<meta name="twitter:card" content="summary_large_image">
+{{ with .Site.Params.social.twitter }}
+<meta name="twitter:site" content="@{{ . }}">
+<meta name="twitter:creator" content="@{{ . }}">
+{{ end }}
+<meta name="twitter:title" content="{{ with .Title }}{{ . }}{{ else }}{{ .Site.Title }}{{ end }}">
+<meta name="twitter:description" content="{{ with .Description }}{{ . }}{{ else }}{{ if .IsPage }}{{ .Summary | truncate 200 }}{{ else }}{{ with .Site.Params.description }}{{ . }}{{ end }}{{ end }}{{ end }}">
+
+<!-- Twitter Image -->
+{{ if .Params.images }}
+<meta name="twitter:image" content="{{ index .Params.images 0 | absURL }}">
+{{ else if .Site.Params.images }}
+<meta name="twitter:image" content="{{ index .Site.Params.images 0 | absURL }}">
+{{ else }}
+<meta name="twitter:image" content="{{ "images/social-card-default.png" | absURL }}">
+{{ end }}
+
+<!-- Additional Open Graph tags to ensure compatibility -->
+<meta property="og:site_name" content="{{ .Site.Title }}">
+<meta property="og:locale" content="{{ .Site.LanguageCode | default "en_US" }}">
