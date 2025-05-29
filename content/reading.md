@@ -2,7 +2,7 @@
 title: "Currently Reading"
 date: 2025-05-29T02:00:00+02:00
 description: "Books I'm currently reading, recently finished, and planning to read. Tracking my reading journey with notes and reflections."
-images: ["/images/reading-social-card.png"]
+images: ["https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1709537279i/198678736.jpg"]
 ---
 
 ## Current Books
