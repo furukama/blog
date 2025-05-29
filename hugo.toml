@@ -42,7 +42,6 @@ enableGitInfo = true
 
 [permalinks]
   posts = "/:year/:month/:day/:title/"
-  post = "/:year/:month/:day/:title/"
   notes = "/:year/:month/:day/:title/"
   archives = "/:year/:month/:day/:title/"
 
