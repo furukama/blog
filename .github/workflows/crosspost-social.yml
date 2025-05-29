@@ -3,7 +3,7 @@ name: Post to Bluesky
 on:
   push:
     paths:
-      - 'content/blog/*.md'
+      - 'content/post/*.md'
     branches:
       - main
   workflow_dispatch:
@@ -34,9 +34,9 @@ jobs:
         id: find_post
         run: |
           if [ "${{ github.event.inputs.test_mode }}" = "true" ]; then
-            POST="content/blog/the-end-of-the-library.md"
+            POST="content/post/the-end-of-the-library.md"
           else
-            POST=$(git diff --name-only HEAD~1 HEAD | grep '^content/blog/.*\.md$' | grep -v '_index.md' | head -n1 || true)
+            POST=$(git diff --name-only HEAD~1 HEAD | grep '^content/post/.*\.md$' | grep -v '_index.md' | head -n1 || true)
           fi
           
           if [ -n "$POST" ]; then
@@ -75,7 +75,7 @@ jobs:
               
               # Create URL
               filename = os.path.basename(post_path).replace('.md', '')
-              url = f"https://furukama.com/blog/{filename}/"
+              url = f"https://furukama.com/post/{filename}/"
               
               # Compose post text
               post_text = f"📝 {title}\n\n{description}\n\n{url}"

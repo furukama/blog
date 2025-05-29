@@ -45,7 +45,7 @@ jobs:
           all_comments = {}
           
           # Process all blog posts
-          for post_path in glob.glob('content/blog/*.md'):
+          for post_path in glob.glob('content/post/*.md'):
               if '_index.md' in post_path:
                   continue
                   
