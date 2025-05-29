@@ -15,6 +15,7 @@ This is my [now page](https://nownownow.com/about), and if you have your own sit
 - Always looking for recommendations
 
 ### Health & Fitness
+- Training for the [Centenarian Olympics](https://peterattiamd.com/outlive-excerpt-centenarian-olympics/)
 - Trying to stay healthy and lift weights
 - Building consistent workout habits
 - Focusing on strength training
