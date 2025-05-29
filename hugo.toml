@@ -47,6 +47,11 @@ timeZone = "Europe/Berlin"
   url = "/notes/"
   weight = 3
 
+[[menu.main]]
+  name = "Now"
+  url = "/now/"
+  weight = 4
+
 [permalinks]
   posts = "/:year/:month/:day/:title/"
   notes = "/:year/:month/:day/:title/"
