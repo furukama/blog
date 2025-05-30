@@ -49,10 +49,21 @@ Your post content here...
 ### Create a new note
 
 ```bash
+# Create with today's date automatically
+hugo new notes/$(date +%Y-%m-%d)-my-note-title.md
+
+# Or create with any filename and rename later
 hugo new notes/my-note.md
+./scripts/rename-note.sh content/notes/my-note.md
 ```
 
-Notes are shorter, informal posts. Structure is similar to blog posts.
+Notes are shorter, informal posts. The filename should follow YYYY-MM-DD-slug format.
+
+**Automatic renaming**: Use the provided script to rename any note to the correct format:
+```bash
+./scripts/rename-note.sh content/notes/my-note.md
+# Renames to: content/notes/2025-05-29-my-note.md (using date from frontmatter)
+```
 
 ### Update the Now page
 
