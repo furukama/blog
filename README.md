@@ -149,7 +149,8 @@ The site has two-way Bluesky integration:
 
 To set up Bluesky integration:
 1. Add `BLUESKY_HANDLE` and `BLUESKY_PASSWORD` as GitHub secrets
-2. The workflows will run automatically
+2. (Optional) Add `PAT` as a GitHub secret with repo write permissions for the import workflow
+3. The workflows will run automatically
 
 ## Features
 
