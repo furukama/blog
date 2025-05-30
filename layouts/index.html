@@ -2,52 +2,68 @@
 {{ .Content }}
 
 <h2>{{ if eq .Language.Lang "de" }}Beiträge{{ else }}Posts{{ end }}</h2>
-{{ $postsSection := .Site.GetPage "section" "posts" }}
-{{ if $postsSection }}
-  {{ $posts := $postsSection.Pages }}
-  {{ if $posts }}
-    {{ range first 5 ($posts.ByDate.Reverse) }}
+{{ if eq .Language.Lang "de" }}
+  {{ with .Site.GetPage "/de/posts" }}
+    {{ range first 5 (.Pages.ByDate.Reverse) }}
       <p>
         <time datetime='{{ .Date.Format "2006-01-02" }}'>{{ .Date.Format "2006-01-02" }}</time>
         <a href="{{ .Permalink }}">{{ .Title }}</a>
       </p>
     {{ end }}
   {{ else }}
-    {{ if eq .Language.Lang "de" }}
-      <p>Noch keine Beiträge.</p>
+    <p>Noch keine Beiträge.</p>
+  {{ end }}
+{{ else }}
+  {{ $postsSection := .Site.GetPage "section" "posts" }}
+  {{ if $postsSection }}
+    {{ $posts := $postsSection.Pages }}
+    {{ if $posts }}
+      {{ range first 5 ($posts.ByDate.Reverse) }}
+        <p>
+          <time datetime='{{ .Date.Format "2006-01-02" }}'>{{ .Date.Format "2006-01-02" }}</time>
+          <a href="{{ .Permalink }}">{{ .Title }}</a>
+        </p>
+      {{ end }}
     {{ else }}
       <p>No posts yet.</p>
     {{ end }}
-  {{ end }}
-{{ else }}
-  {{ if eq .Language.Lang "de" }}
-    <p>Noch keine Beiträge.</p>
   {{ else }}
     <p>No posts yet.</p>
   {{ end }}
 {{ end }}
 
 <h2>{{ if eq .Language.Lang "de" }}Notizen{{ else }}Notes{{ end }}</h2>
-{{ $notesSection := .Site.GetPage "section" "notes" }}
-{{ if $notesSection }}
-  {{ $notes := $notesSection.Pages }}
-  {{ if $notes }}
-    {{ range first 5 ($notes.ByDate.Reverse) }}
+{{ if eq .Language.Lang "de" }}
+  {{ $deNotes := slice }}
+  {{ range .Site.AllPages }}
+    {{ if and (eq .Kind "page") (in .File.Path "de/notes/") }}
+      {{ $deNotes = $deNotes | append . }}
+    {{ end }}
+  {{ end }}
+  {{ if $deNotes }}
+    {{ range first 5 (sort $deNotes "Date" "desc") }}
       <p>
         <time datetime='{{ .Date.Format "2006-01-02" }}'>{{ .Date.Format "2006-01-02" }}</time>
         <a href="{{ .Permalink }}">{{ .Title }}</a>
       </p>
     {{ end }}
   {{ else }}
-    {{ if eq .Language.Lang "de" }}
-      <p>Noch keine Notizen.</p>
+    <p>Noch keine Notizen.</p>
+  {{ end }}
+{{ else }}
+  {{ $notesSection := .Site.GetPage "section" "notes" }}
+  {{ if $notesSection }}
+    {{ $notes := $notesSection.Pages }}
+    {{ if $notes }}
+      {{ range first 5 ($notes.ByDate.Reverse) }}
+        <p>
+          <time datetime='{{ .Date.Format "2006-01-02" }}'>{{ .Date.Format "2006-01-02" }}</time>
+          <a href="{{ .Permalink }}">{{ .Title }}</a>
+        </p>
+      {{ end }}
     {{ else }}
       <p>No notes yet.</p>
     {{ end }}
-  {{ end }}
-{{ else }}
-  {{ if eq .Language.Lang "de" }}
-    <p>Noch keine Notizen.</p>
   {{ else }}
     <p>No notes yet.</p>
   {{ end }}

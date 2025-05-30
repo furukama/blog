@@ -1,0 +1,10 @@
+{{ define "main" }}
+{{ $isGerman := in .Permalink "/de/" }}
+<h1>{{ if $isGerman }}Alle Notizen{{ else }}All Notes{{ end }}</h1>
+{{ range .Pages.ByDate.Reverse }}
+  <p>
+    <time datetime='{{ .Date.Format "2006-01-02" }}'>{{ .Date.Format "2006-01-02" }}</time>
+    <a href="{{ .Permalink }}">{{ .Title }}</a>
+  </p>
+{{ end }}
+{{ end }}

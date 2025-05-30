@@ -1,8 +1,9 @@
-<a class="skip-link" href="#main-content">{{ i18n "skip-link" }}</a>
+{{ $isGerman := in .Permalink "/de/" }}
+<a class="skip-link" href="#main-content">{{ if $isGerman }}Zum Hauptinhalt{{ else }}{{ i18n "skip-link" | default "Skip to main content" }}{{ end }}</a>
 
-<a href="{{ relURL .Site.Home.RelPermalink }}" class="title" style="display: flex; align-items: center; gap: 10px;">
+<a href="{{ if $isGerman }}/de/{{ else }}/{{ end }}" class="title" style="display: flex; align-items: center; gap: 10px;">
   <img src="https://1.gravatar.com/avatar/d9cc6da84abc3210d0041e0e1d923f81d622b70cb96e3f6bb45655f9f87154fb?size=512&d=initials" alt="Furukama" style="width: 60px; height: 60px; border-radius: 50%;">
-  <h1>{{ .Site.Title }}</h1>
+  <h1>{{ if $isGerman }}Furukamas Blog{{ else }}Furukama's Blog{{ end }}</h1>
 </a>
 <nav>{{- partial "nav.html" . -}}</nav>
 <p style="margin: 0.5em 0; font-size: 1.2em; font-weight: bold;">
