@@ -27,7 +27,7 @@ jobs:
       
       - name: Install dependencies
         run: |
-          pip install atproto>=0.0.48 pyyaml requests pillow
+          pip install atproto>=0.0.48 pyyaml requests pillow langdetect
       
       - name: Fetch and create notes from Bluesky
         env:
@@ -42,6 +42,7 @@ jobs:
           from datetime import datetime, timezone
           from atproto import Client as BlueskyClient
           from pathlib import Path
+          from langdetect import detect
           
           # Initialize Bluesky client
           handle = os.environ.get('BLUESKY_HANDLE')
@@ -97,13 +98,24 @@ jobs:
                   date_obj = datetime.fromisoformat(created_at.replace('Z', '+00:00'))
                   date_str = date_obj.strftime('%Y-%m-%d')
                   
+                  # Detect language
+                  try:
+                      lang = detect(text)
+                      if lang not in ['en', 'de']:
+                          lang = 'en'  # Default to English if not English or German
+                  except:
+                      lang = 'en'  # Default to English if detection fails
+                  
                   # Generate slug from text
                   slug_text = re.sub(r'[^\w\s-]', '', text.lower())
                   slug_text = re.sub(r'[-\s]+', '-', slug_text)
                   slug = slug_text[:50].strip('-')
                   
-                  filename = f"{date_str}-bsky-{slug}.md"
-                  filepath = Path(f"content/notes/{filename}")
+                  filename = date_str + "-" + slug + ".md"
+                  if lang == 'de':
+                      filepath = Path("content/de/notes/" + filename)
+                  else:
+                      filepath = Path("content/notes/" + filename)
                   
                   # Check if note already exists
                   if filepath.exists():
@@ -155,7 +167,7 @@ jobs:
                   downloaded_images = []
                   if images:
                       # Create image directory
-                      img_dir = Path(f"static/images/notes/{date_str}-bsky-{post_id[:8]}")
+                      img_dir = Path("static/images/notes/" + date_str + "-" + slug)
                       img_dir.mkdir(parents=True, exist_ok=True)
                       
                       for idx, img in enumerate(images):
@@ -182,7 +194,7 @@ jobs:
                                   f.write(response.content)
                               
                               downloaded_images.append({
-                                  'path': f"/images/notes/{date_str}-bsky-{post_id[:8]}/{img_filename}",
+                                  'path': "/images/notes/" + date_str + "-" + slug + "/" + img_filename,
                                   'alt': img.get('alt', ''),
                                   'link': img.get('link', ''),
                                   'is_video': img.get('is_video', False)
@@ -228,7 +240,7 @@ jobs:
                   with open(filepath, 'w', encoding='utf-8') as f:
                       f.write(note_content)
                   
-                  print(f"✅ Created note: {filename}")
+                  print("✅ Created note (" + lang + "): " + filename)
                   created_notes += 1
                   
               except Exception as e:
@@ -248,9 +260,8 @@ jobs:
           git config --local user.name "GitHub Action"
           
           # Check if there are changes
-          if [[ -n $(git status -s content/notes/) ]] || [[ -n $(git status -s static/images/notes/) ]]; then
-            git add content/notes/
-            git add static/images/notes/
+          if [[ -n $(git status -s content/notes/) ]] || [[ -n $(git status -s content/de/notes/) ]] || [[ -n $(git status -s static/images/notes/) ]]; then
+            git add content/notes/ content/de/notes/ static/images/notes/
             git commit -m "Import Bluesky posts as notes
             
             Automated import of non-blog Bluesky posts with images"
