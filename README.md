@@ -178,4 +178,4 @@ The site is configured for deployment at https://furukama.com/
 
 ## License
 
-Content is copyrighted. Theme is under its own license.
+Content is copyrighted. Theme is under its own license. 
