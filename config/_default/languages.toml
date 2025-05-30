@@ -28,25 +28,25 @@
 # Menu translations
 [[de.menu.main]]
   name = "Startseite"
-  url = "/"
+  url = "/de/"
   weight = 1
 
 [[de.menu.main]]
   name = "Beiträge"
-  url = "/posts/"
+  url = "/de/posts/"
   weight = 2
 
 [[de.menu.main]]
   name = "Notizen"
-  url = "/notes/"
+  url = "/de/notes/"
   weight = 3
 
 [[de.menu.main]]
   name = "Jetzt"
-  url = "/now/"
+  url = "/de/now/"
   weight = 4
 
 [[de.menu.main]]
   name = "Lesen"
-  url = "/reading/"
+  url = "/de/reading/"
   weight = 5

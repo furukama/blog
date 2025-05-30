@@ -2,40 +2,54 @@
 {{ .Content }}
 
 <h2>{{ if eq .Language.Lang "de" }}Beiträge{{ else }}Posts{{ end }}</h2>
-{{ $posts := slice }}
-{{ range .Site.RegularPages }}
-  {{ if and (in .RelPermalink "/posts/") (eq .Language.Lang $.Language.Lang) }}
-    {{ $posts = $posts | append . }}
-  {{ end }}
-{{ end }}
-{{ $sortedPosts := $posts.ByDate.Reverse }}
-{{ if $sortedPosts }}
-  {{ range first 5 $sortedPosts }}
-    <p>
-      <time datetime='{{ .Date.Format "2006-01-02" }}'>{{ .Date.Format "2006-01-02" }}</time>
-      <a href="{{ .Permalink }}">{{ .Title }}</a>
-    </p>
+{{ $postsSection := .Site.GetPage "section" "posts" }}
+{{ if $postsSection }}
+  {{ $posts := $postsSection.Pages }}
+  {{ if $posts }}
+    {{ range first 5 ($posts.ByDate.Reverse) }}
+      <p>
+        <time datetime='{{ .Date.Format "2006-01-02" }}'>{{ .Date.Format "2006-01-02" }}</time>
+        <a href="{{ .Permalink }}">{{ .Title }}</a>
+      </p>
+    {{ end }}
+  {{ else }}
+    {{ if eq .Language.Lang "de" }}
+      <p>Noch keine Beiträge.</p>
+    {{ else }}
+      <p>No posts yet.</p>
+    {{ end }}
   {{ end }}
 {{ else }}
-  <p>{{ if eq .Language.Lang "de" }}Noch keine Beiträge.{{ else }}No posts yet.{{ end }}</p>
+  {{ if eq .Language.Lang "de" }}
+    <p>Noch keine Beiträge.</p>
+  {{ else }}
+    <p>No posts yet.</p>
+  {{ end }}
 {{ end }}
 
 <h2>{{ if eq .Language.Lang "de" }}Notizen{{ else }}Notes{{ end }}</h2>
-{{ $notes := slice }}
-{{ range .Site.RegularPages }}
-  {{ if and (in .RelPermalink "/notes/") (eq .Language.Lang $.Language.Lang) }}
-    {{ $notes = $notes | append . }}
-  {{ end }}
-{{ end }}
-{{ $sortedNotes := $notes.ByDate.Reverse }}
-{{ if $sortedNotes }}
-  {{ range first 5 $sortedNotes }}
-    <p>
-      <time datetime='{{ .Date.Format "2006-01-02" }}'>{{ .Date.Format "2006-01-02" }}</time>
-      <a href="{{ .Permalink }}">{{ .Title }}</a>
-    </p>
+{{ $notesSection := .Site.GetPage "section" "notes" }}
+{{ if $notesSection }}
+  {{ $notes := $notesSection.Pages }}
+  {{ if $notes }}
+    {{ range first 5 ($notes.ByDate.Reverse) }}
+      <p>
+        <time datetime='{{ .Date.Format "2006-01-02" }}'>{{ .Date.Format "2006-01-02" }}</time>
+        <a href="{{ .Permalink }}">{{ .Title }}</a>
+      </p>
+    {{ end }}
+  {{ else }}
+    {{ if eq .Language.Lang "de" }}
+      <p>Noch keine Notizen.</p>
+    {{ else }}
+      <p>No notes yet.</p>
+    {{ end }}
   {{ end }}
 {{ else }}
-  <p>{{ if eq .Language.Lang "de" }}Noch keine Notizen.{{ else }}No notes yet.{{ end }}</p>
+  {{ if eq .Language.Lang "de" }}
+    <p>Noch keine Notizen.</p>
+  {{ else }}
+    <p>No notes yet.</p>
+  {{ end }}
 {{ end }}
 {{ end }}
