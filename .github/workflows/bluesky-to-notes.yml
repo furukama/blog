@@ -190,14 +190,15 @@ jobs:
                   
                   # Create note content
                   title_text = text[:50] + ("..." if len(text) > 50 else "")
-                  note_content = f"""+++
-date = '{date_obj.strftime('%Y-%m-%dT%H:%M:%S%z')}'
-draft = false
-title = 'Bluesky: {title_text}'
-tags = ["bluesky", "microblog"]
-+++
-
-{text}"""
+                  date_str_formatted = date_obj.strftime('%Y-%m-%dT%H:%M:%S%z')
+                  
+                  note_content = "+++\n"
+                  note_content += "date = '" + date_str_formatted + "'\n"
+                  note_content += "draft = false\n"
+                  note_content += "title = 'Bluesky: " + title_text + "'\n"
+                  note_content += "tags = [\"bluesky\", \"microblog\"]\n"
+                  note_content += "+++\n\n"
+                  note_content += text
                   
                   # Add images if any
                   if downloaded_images:
@@ -205,19 +206,19 @@ tags = ["bluesky", "microblog"]
                       for img in downloaded_images:
                           if img.get('link'):
                               # Image with link (like animated GIFs from external sources)
-                              note_content += f'{{{{< figure src="{img["path"]}" alt="{img["alt"]}" link="{img["link"]}" target="_blank" >}}}}\n\n'
+                              note_content += '{{< figure src="' + img["path"] + '" alt="' + img["alt"] + '" link="' + img["link"] + '" target="_blank" >}}\n\n'
                           else:
                               # Regular image
-                              note_content += f'![{img["alt"]}]({img["path"]})\n\n'
+                              note_content += '![' + img["alt"] + '](' + img["path"] + ')\n\n'
                   
                   # Add links if any
                   if links:
                       note_content += "\n"
                       for link in links:
-                          note_content += f"🔗 [{link}]({link})\n"
+                          note_content += "🔗 [" + link + "](" + link + ")\n"
                   
                   # Add link to original post
-                  note_content += f"\n\n[View on Bluesky](https://bsky.app/profile/{handle}/post/{post_id})"
+                  note_content += "\n\n[View on Bluesky](https://bsky.app/profile/" + handle + "/post/" + post_id + ")"
                   
                   # Write the note
                   filepath.parent.mkdir(parents=True, exist_ok=True)
