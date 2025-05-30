@@ -2,15 +2,15 @@
 {{ .Content }}
 
 <h2>{{ if eq .Language.Lang "de" }}Beiträge{{ else }}Posts{{ end }}</h2>
-{{ $allPages := .Site.RegularPages.ByDate.Reverse }}
 {{ $posts := slice }}
-{{ range $allPages }}
+{{ range .Site.RegularPages }}
   {{ if and (in .RelPermalink "/posts/") (eq .Language.Lang $.Language.Lang) }}
     {{ $posts = $posts | append . }}
   {{ end }}
 {{ end }}
-{{ if $posts }}
-  {{ range first 5 $posts }}
+{{ $sortedPosts := $posts.ByDate.Reverse }}
+{{ if $sortedPosts }}
+  {{ range first 5 $sortedPosts }}
     <p>
       <time datetime='{{ .Date.Format "2006-01-02" }}'>{{ .Date.Format "2006-01-02" }}</time>
       <a href="{{ .Permalink }}">{{ .Title }}</a>
@@ -22,13 +22,14 @@
 
 <h2>{{ if eq .Language.Lang "de" }}Notizen{{ else }}Notes{{ end }}</h2>
 {{ $notes := slice }}
-{{ range $allPages }}
+{{ range .Site.RegularPages }}
   {{ if and (in .RelPermalink "/notes/") (eq .Language.Lang $.Language.Lang) }}
     {{ $notes = $notes | append . }}
   {{ end }}
 {{ end }}
-{{ if $notes }}
-  {{ range first 5 $notes }}
+{{ $sortedNotes := $notes.ByDate.Reverse }}
+{{ if $sortedNotes }}
+  {{ range first 5 $sortedNotes }}
     <p>
       <time datetime='{{ .Date.Format "2006-01-02" }}'>{{ .Date.Format "2006-01-02" }}</time>
       <a href="{{ .Permalink }}">{{ .Title }}</a>
