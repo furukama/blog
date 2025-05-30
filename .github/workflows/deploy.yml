@@ -3,6 +3,11 @@ name: Deploy Hugo to All-Inkl
 on:
   push:
     branches: [ main ]
+  workflow_dispatch: # Allow manual triggering
+  workflow_run:
+    workflows: ["Import Bluesky Posts as Notes"]
+    types:
+      - completed
 
 jobs:
   deploy:
