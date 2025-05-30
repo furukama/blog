@@ -210,7 +210,7 @@ jobs:
                   note_content = "+++\n"
                   note_content += "date = '" + date_str_formatted + "'\n"
                   note_content += "draft = false\n"
-                  note_content += "title = 'Bluesky: " + title_text + "'\n"
+                  note_content += "title = '" + title_text + "'\n"
                   note_content += "tags = [\"bluesky\", \"microblog\"]\n"
                   note_content += "+++\n\n"
                   note_content += text

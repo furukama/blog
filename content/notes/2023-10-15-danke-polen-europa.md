@@ -1,7 +1,7 @@
 +++
 date = '2023-10-15T19:36:56+0000'
 draft = false
-title = 'Bluesky: Danke, Polen! #europa'
+title = 'Danke, Polen! #europa'
 tags = ["bluesky", "microblog"]
 +++
 
