@@ -140,6 +140,17 @@ hugo new de/notes/meine-notiz.md
 
 Language switcher will appear automatically when content exists in multiple languages.
 
+### Bluesky integration
+
+The site has two-way Bluesky integration:
+
+1. **Blog to Bluesky**: New blog posts are automatically shared to Bluesky
+2. **Bluesky to Notes**: Bluesky posts (that don't contain furukama.com links) are automatically imported as notes every 6 hours
+
+To set up Bluesky integration:
+1. Add `BLUESKY_HANDLE` and `BLUESKY_PASSWORD` as GitHub secrets
+2. The workflows will run automatically
+
 ## Features
 
 - Dynamic social card generation
@@ -147,6 +158,7 @@ Language switcher will appear automatically when content exists in multiple lang
 - Reading list with book covers
 - Responsive design
 - Automatic cross-posting to Bluesky
+- Automatic import of Bluesky posts as notes (non-blog posts)
 
 ## Deploy
 

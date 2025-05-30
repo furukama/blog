@@ -1,0 +1,256 @@
+# ABOUTME: This workflow fetches recent Bluesky posts and creates notes for non-blog posts
+# ABOUTME: It runs periodically to sync Bluesky content that isn't already blog posts
+
+name: Import Bluesky Posts as Notes
+
+on:
+  schedule:
+    # Run every 6 hours
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+
+jobs:
+  import-posts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: |
+          pip install atproto>=0.0.48 pyyaml requests pillow
+      
+      - name: Fetch and create notes from Bluesky
+        env:
+          BLUESKY_HANDLE: ${{ secrets.BLUESKY_HANDLE }}
+          BLUESKY_PASSWORD: ${{ secrets.BLUESKY_PASSWORD }}
+        run: |
+          python3 << 'EOF'
+          import os
+          import re
+          import yaml
+          import requests
+          from datetime import datetime, timezone
+          from atproto import Client as BlueskyClient
+          from pathlib import Path
+          
+          # Initialize Bluesky client
+          handle = os.environ.get('BLUESKY_HANDLE')
+          password = os.environ.get('BLUESKY_PASSWORD')
+          
+          if not handle or not password:
+              print("❌ Bluesky credentials not configured")
+              exit(0)
+          
+          try:
+              client = BlueskyClient()
+              client.login(handle, password)
+              print(f"✅ Logged in as {handle}")
+          except Exception as e:
+              print(f"❌ Login failed: {e}")
+              exit(1)
+          
+          # Get recent posts
+          try:
+              response = client.get_author_feed(handle, limit=20)
+              posts = response.feed
+              print(f"📝 Found {len(posts)} recent posts")
+          except Exception as e:
+              print(f"❌ Failed to fetch posts: {e}")
+              exit(1)
+          
+          # Process posts
+          created_notes = 0
+          for post in posts:
+              try:
+                  record = post.post.record
+                  text = record.text
+                  created_at = post.post.record.created_at
+                  post_uri = post.post.uri
+                  post_id = post_uri.split('/')[-1]
+                  
+                  # Skip if contains furukama.com link
+                  if 'furukama.com' in text:
+                      print(f"⏭️  Skipping blog post: {text[:50]}...")
+                      continue
+                  
+                  # Skip replies
+                  if hasattr(record, 'reply') and record.reply:
+                      print(f"⏭️  Skipping reply: {text[:50]}...")
+                      continue
+                  
+                  # Skip reposts
+                  if hasattr(post, 'reason') and post.reason:
+                      print(f"⏭️  Skipping repost: {text[:50] if text else 'No text'}...")
+                      continue
+                  
+                  # Create filename from date and first few words
+                  date_obj = datetime.fromisoformat(created_at.replace('Z', '+00:00'))
+                  date_str = date_obj.strftime('%Y-%m-%d')
+                  
+                  # Generate slug from text
+                  slug_text = re.sub(r'[^\w\s-]', '', text.lower())
+                  slug_text = re.sub(r'[-\s]+', '-', slug_text)
+                  slug = slug_text[:50].strip('-')
+                  
+                  filename = f"{date_str}-bsky-{slug}.md"
+                  filepath = Path(f"content/notes/{filename}")
+                  
+                  # Check if note already exists
+                  if filepath.exists():
+                      print(f"✅ Note already exists: {filename}")
+                      continue
+                  
+                  # Extract links from facets if any
+                  links = []
+                  if hasattr(record, 'facets') and record.facets:
+                      for facet in record.facets:
+                          for feature in facet.features:
+                              if hasattr(feature, 'uri'):
+                                  links.append(feature.uri)
+                  
+                  # Extract images/media
+                  images = []
+                  if hasattr(record, 'embed') and record.embed:
+                      embed = record.embed
+                      
+                      # Handle single image
+                      if hasattr(embed, 'images') and embed.images:
+                          for img in embed.images:
+                              if hasattr(img, 'thumb'):
+                                  images.append({
+                                      'url': img.thumb,
+                                      'alt': img.alt if hasattr(img, 'alt') else ''
+                                  })
+                      
+                      # Handle external embeds (like GIFs)
+                      if hasattr(embed, 'external') and embed.external:
+                          external = embed.external
+                          if hasattr(external, 'thumb') and external.thumb:
+                              images.append({
+                                  'url': external.thumb,
+                                  'alt': external.title if hasattr(external, 'title') else '',
+                                  'link': external.uri if hasattr(external, 'uri') else ''
+                              })
+                      
+                      # Handle video
+                      if hasattr(embed, 'video') and embed.video:
+                          if hasattr(embed.video, 'thumb'):
+                              images.append({
+                                  'url': embed.video.thumb,
+                                  'alt': 'Video thumbnail',
+                                  'is_video': True
+                              })
+                  
+                  # Download images if any
+                  downloaded_images = []
+                  if images:
+                      # Create image directory
+                      img_dir = Path(f"static/images/notes/{date_str}-bsky-{post_id[:8]}")
+                      img_dir.mkdir(parents=True, exist_ok=True)
+                      
+                      for idx, img in enumerate(images):
+                          try:
+                              # Download image
+                              response = requests.get(img['url'], timeout=10)
+                              response.raise_for_status()
+                              
+                              # Determine file extension
+                              content_type = response.headers.get('content-type', '')
+                              if 'gif' in content_type or img['url'].endswith('.gif'):
+                                  ext = 'gif'
+                              elif 'webp' in content_type or img['url'].endswith('.webp'):
+                                  ext = 'webp'
+                              elif 'png' in content_type or img['url'].endswith('.png'):
+                                  ext = 'png'
+                              else:
+                                  ext = 'jpg'
+                              
+                              # Save image
+                              img_filename = f"image-{idx+1}.{ext}"
+                              img_path = img_dir / img_filename
+                              with open(img_path, 'wb') as f:
+                                  f.write(response.content)
+                              
+                              downloaded_images.append({
+                                  'path': f"/images/notes/{date_str}-bsky-{post_id[:8]}/{img_filename}",
+                                  'alt': img.get('alt', ''),
+                                  'link': img.get('link', ''),
+                                  'is_video': img.get('is_video', False)
+                              })
+                              print(f"  ✅ Downloaded image: {img_filename}")
+                          except Exception as e:
+                              print(f"  ❌ Failed to download image: {e}")
+                  
+                  # Create note content
+                  note_content = f"""+++
+date = '{date_obj.strftime('%Y-%m-%dT%H:%M:%S%z')}'
+draft = false
+title = 'Bluesky: {text[:50]}{"..." if len(text) > 50 else ""}'
+tags = ["bluesky", "microblog"]
++++
+
+{text}"""
+                  
+                  # Add images if any
+                  if downloaded_images:
+                      note_content += "\n\n"
+                      for img in downloaded_images:
+                          if img.get('link'):
+                              # Image with link (like animated GIFs from external sources)
+                              note_content += f'{{{{< figure src="{img["path"]}" alt="{img["alt"]}" link="{img["link"]}" target="_blank" >}}}}\n\n'
+                          else:
+                              # Regular image
+                              note_content += f'![{img["alt"]}]({img["path"]})\n\n'
+                  
+                  # Add links if any
+                  if links:
+                      note_content += "\n"
+                      for link in links:
+                          note_content += f"🔗 [{link}]({link})\n"
+                  
+                  # Add link to original post
+                  note_content += f"\n\n[View on Bluesky](https://bsky.app/profile/{handle}/post/{post_id})"
+                  
+                  # Write the note
+                  filepath.parent.mkdir(parents=True, exist_ok=True)
+                  with open(filepath, 'w', encoding='utf-8') as f:
+                      f.write(note_content)
+                  
+                  print(f"✅ Created note: {filename}")
+                  created_notes += 1
+                  
+              except Exception as e:
+                  print(f"❌ Error processing post: {e}")
+                  continue
+          
+          print(f"\n📊 Summary: Created {created_notes} new notes")
+          
+          # If we created notes, we need to commit them
+          if created_notes > 0:
+              print("\n📝 Notes created successfully. They will be committed by the next step.")
+          EOF
+      
+      - name: Commit new notes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          
+          # Check if there are changes
+          if [[ -n $(git status -s content/notes/) ]] || [[ -n $(git status -s static/images/notes/) ]]; then
+            git add content/notes/
+            git add static/images/notes/
+            git commit -m "Import Bluesky posts as notes
+            
+            Automated import of non-blog Bluesky posts with images"
+            git push
+            echo "✅ Committed and pushed new notes"
+          else
+            echo "ℹ️  No new notes to commit"
+          fi
