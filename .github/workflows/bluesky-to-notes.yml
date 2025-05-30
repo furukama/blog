@@ -189,10 +189,11 @@ jobs:
                               print(f"  ❌ Failed to download image: {e}")
                   
                   # Create note content
+                  title_text = text[:50] + ("..." if len(text) > 50 else "")
                   note_content = f"""+++
 date = '{date_obj.strftime('%Y-%m-%dT%H:%M:%S%z')}'
 draft = false
-title = 'Bluesky: {text[:50]}{"..." if len(text) > 50 else ""}'
+title = 'Bluesky: {title_text}'
 tags = ["bluesky", "microblog"]
 +++
 
