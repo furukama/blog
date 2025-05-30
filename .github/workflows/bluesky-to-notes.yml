@@ -132,17 +132,46 @@ jobs:
                   
                   # Extract images/media
                   images = []
-                  if hasattr(record, 'embed') and record.embed:
+                  # Check both post.embed (view) and record.embed (raw data)
+                  embed = None
+                  if hasattr(post.post, 'embed') and post.post.embed:
+                      embed = post.post.embed
+                      print(f"  🔍 Using post.embed (view) - type: {type(embed).__name__}")
+                  elif hasattr(record, 'embed') and record.embed:
                       embed = record.embed
+                      print(f"  🔍 Using record.embed (raw) - type: {type(embed).__name__}")
+                  
+                  if embed:
+                      print(f"  🔍 Embed attributes: {[attr for attr in dir(embed) if not attr.startswith('_')]}")
                       
                       # Handle single image
                       if hasattr(embed, 'images') and embed.images:
+                          print(f"  📷 Found {len(embed.images)} images in embed")
                           for img in embed.images:
+                              print(f"    🔍 Image attributes: {[attr for attr in dir(img) if not attr.startswith('_')]}")
+                              # Check for different possible image URL attributes
+                              img_url = None
+                              alt_text = ''
+                              
+                              # First try the view format (thumb/fullsize)
                               if hasattr(img, 'thumb'):
+                                  img_url = img.thumb
+                                  print(f"    ✅ Found thumbnail URL: {img_url[:50]}...")
+                              elif hasattr(img, 'fullsize'):
+                                  img_url = img.fullsize
+                                  print(f"    ✅ Found fullsize URL: {img_url[:50]}...")
+                              
+                              # Get alt text if available
+                              if hasattr(img, 'alt'):
+                                  alt_text = img.alt
+                              
+                              if img_url:
                                   images.append({
-                                      'url': img.thumb,
-                                      'alt': img.alt if hasattr(img, 'alt') else ''
+                                      'url': img_url,
+                                      'alt': alt_text
                                   })
+                              else:
+                                  print(f"    ❌ Could not find image URL in image object")
                       
                       # Handle external embeds (like GIFs)
                       if hasattr(embed, 'external') and embed.external:
@@ -162,10 +191,13 @@ jobs:
                                   'alt': 'Video thumbnail',
                                   'is_video': True
                               })
+                  else:
+                      print(f"  ℹ️  No embed found in post")
                   
                   # Download images if any
                   downloaded_images = []
                   if images:
+                      print(f"  📸 Found {len(images)} images to download")
                       # Create image directory
                       img_dir = Path("static/images/notes/" + date_str + "-" + slug)
                       img_dir.mkdir(parents=True, exist_ok=True)
