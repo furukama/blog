@@ -7,18 +7,13 @@
   </time>
   {{ with .Params.author }}· {{.}}{{ end }} &middot;
   {{ .WordCount }}&nbsp;{{ i18n "words" }} words &middot;
-  {{ .ReadingTime }}&nbsp;{{ i18n "minutes" }} mins
+  {{ .ReadingTime }}&nbsp;{{ i18n "minutes" }} mins &middot;
+  <button class="tinylytics_kudos" data-path="{{ .RelPermalink }}">❤️</button>
 </p>
 {{ end }}
 <content>
   {{ .Content }}
 </content>
 {{ partialCached "tags.html" . .Title}}
-
-<!-- Tinylytics Kudos Button -->
-<div class="kudos-container" style="margin: 2em 0; text-align: center;">
-  <button class="tinylytics_kudos"></button>
-</div>
-
 {{ partial "comments.html" . }}
 {{ end }}
