@@ -14,5 +14,11 @@
   {{ .Content }}
 </content>
 {{ partialCached "tags.html" . .Title}}
+
+<!-- Tinylytics Kudos Button -->
+<div class="kudos-container" style="margin: 2em 0; text-align: center;">
+  <button style="padding: 0.5em 1em; font-size: 1em; cursor: pointer;" data-tinylytics-kudos>👏 Kudos</button>
+</div>
+
 {{ partial "comments.html" . }}
 {{ end }}
