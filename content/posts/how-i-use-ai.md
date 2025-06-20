@@ -10,7 +10,7 @@ My main uses of LLMs these days:
 
 ## Coding
 
-I use LLMs like Claude Code or OpenAI Codex extensively in coding. When you create a detailed plan, it works surprisingly well for greenfield development, but most of my current use focuses on refactoring legacy code. Test-driven development works very well, even for complex tasks, but you have to be absolutely open to trashing around 50% of AI's work because it leads nowhere or heads in the wrong direction. Here, it certainly pays to have 30+ years of background in coding. Just noticing "Ah, this is completely the wrong direction" is worth a lot.
+I use LLMs like [Claude Code](/posts/the-end-of-the-library/) or OpenAI Codex extensively in coding. When you create a detailed plan, it works surprisingly well for greenfield development, but most of my current use focuses on refactoring legacy code. Test-driven development works very well, even for complex tasks, but you have to be absolutely open to trashing around 50% of AI's work because it leads nowhere or heads in the wrong direction. Here, it certainly pays to have 30+ years of background in coding. Just noticing "Ah, this is completely the wrong direction" is worth a lot.
 
 ## Blogging
 
