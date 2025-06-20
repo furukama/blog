@@ -20,7 +20,7 @@ images: ["https://images-na.ssl-images-amazon.com/images/S/compressed.photo.good
 
 {{< booklist title="Co-Intelligence: Living and Working with AI" author="Ethan Mollick" date="December 2025" url="https://www.goodreads.com/book/show/198678736-co-intelligence" rating="4.18" notes="Loved this very much. It's the perfect mix of techno-optimism (or techno-letstryitoutism) and care. In a nutshell: our job is to find out what LLMs can do for us, stay in the loop as human, treat them like humans (although knowing they aren't), remember that AI tomorrow will be much better than today. (5/5)" >}}
 
-{{< booklist title="How Big Things Get Done" author="Bent Flyvbjerg and Dan Gardner" date="May 2025" url="https://www.goodreads.com/book/show/61327449-how-big-things-get-done" rating="4.18" >}}
+{{< booklist title="How Big Things Get Done" author="Bent Flyvbjerg and Dan Gardner" date="May 2025" url="https://www.goodreads.com/book/show/61327449-how-big-things-get-done" rating="4.18" notes="Lots of anecdotes leave you well prepared for summer party small talk. The Sydney opera house story was fascinating to read. But: lots of words for very simple messages. Do plan. (3/5)" >}}
 
 ## Reading List
 
