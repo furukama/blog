@@ -3,23 +3,33 @@
 {{ $date := .Get "date" }}
 {{ $url := .Get "url" }}
 {{ $rating := .Get "rating" }}
+{{ $notes := .Get "notes" }}
 
-<p class="book-list-item">
-    {{ if $date }}
-        <span class="book-date">{{ $date }}</span> -
+<div class="book-list-item">
+    <p>
+        {{ if $date }}
+            <span class="book-date">{{ $date }}</span> -
+        {{ end }}
+        {{ if $url }}
+            <a href="{{ $url }}" target="_blank" rel="noopener">{{ $title }} by {{ $author }}</a>
+        {{ else }}
+            {{ $title }} by {{ $author }}
+        {{ end }}
+        {{ if $rating }}
+            <span class="book-rating">({{ $rating }}/5)</span>
+        {{ end }}
+    </p>
+    {{ if $notes }}
+    <p class="book-notes">{{ $notes }}</p>
     {{ end }}
-    {{ if $url }}
-        <a href="{{ $url }}" target="_blank" rel="noopener">{{ $title }} by {{ $author }}</a>
-    {{ else }}
-        {{ $title }} by {{ $author }}
-    {{ end }}
-    {{ if $rating }}
-        <span class="book-rating">({{ $rating }}/5)</span>
-    {{ end }}
-</p>
+</div>
 
 <style>
 .book-list-item {
+    margin: 1em 0;
+}
+
+.book-list-item p {
     margin: 0.5em 0;
 }
 
@@ -30,5 +40,11 @@
 .book-rating {
     color: #f39c12;
     margin-left: 0.5em;
+}
+
+.book-notes {
+    color: #555;
+    font-style: italic;
+    margin-left: 1em;
 }
 </style>
