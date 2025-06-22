@@ -13,6 +13,7 @@ images: ["https://images-na.ssl-images-amazon.com/images/S/compressed.photo.good
     goodreads="https://www.goodreads.com/book/show/16131032-abaddon-s-gate"
     cover="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1407572059i/16131032.jpg"
     rating="4.28"
+    notes="The third Expanse novel. A mysterious alien Ring appears beyond Uranus, drawing humanity's factions into a dangerous convergence. As Holden and the Rocinante join the expedition alongside Earth, Mars, and OPA ships, the greatest threat may be what humanity brings to this first contact with alien technology."
 >}}
 
 ## Recently Finished
