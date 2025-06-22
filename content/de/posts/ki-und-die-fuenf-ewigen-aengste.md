@@ -1,6 +1,6 @@
 ---
 title: "KI und die fünf ewigen Ängste der Menschheit"
-date: 2025-06-22T12:00:00Z
+date: 2025-06-22T12:00:00+02:00
 draft: false
 ---
 
