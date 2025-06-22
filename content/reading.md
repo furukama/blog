@@ -26,4 +26,6 @@ images: ["https://images-na.ssl-images-amazon.com/images/S/compressed.photo.good
 
 ## Reading List
 
+{{< booklist title="The Technological Republic" author="Alexander C. Karp" url="https://www.goodreads.com/book/show/213618136-the-technological-republic" rating="3.71" >}}
+
 {{< booklist title="The Sovereign Individual" author="James Dale Davidson and William Rees-Mogg" url="https://www.goodreads.com/book/show/82256.The_Sovereign_Individual" rating="4.19" >}}
