@@ -14,6 +14,10 @@
       <p>
         <time datetime='{{ .Date.Format "2006-01-02" }}'>{{ .Date.Format "2006-01-02" }}</time>
         <a href="{{ .Permalink }}">{{ .Title }}</a>
+        {{ $daysAgo := div (sub now.Unix .Date.Unix) 86400 }}
+        {{ if le $daysAgo 7 }}
+          <span style="background-color: #ffd700; color: #000; padding: 2px 6px; border-radius: 3px; font-size: 0.8em; font-weight: bold; margin-left: 8px;">NEU</span>
+        {{ end }}
       </p>
     {{ end }}
   {{ else }}
@@ -28,6 +32,10 @@
         <p>
           <time datetime='{{ .Date.Format "2006-01-02" }}'>{{ .Date.Format "2006-01-02" }}</time>
           <a href="{{ .Permalink }}">{{ .Title }}</a>
+          {{ $daysAgo := div (sub now.Unix .Date.Unix) 86400 }}
+          {{ if le $daysAgo 7 }}
+            <span style="background-color: #ffd700; color: #000; padding: 2px 6px; border-radius: 3px; font-size: 0.8em; font-weight: bold; margin-left: 8px;">NEW</span>
+          {{ end }}
         </p>
       {{ end }}
     {{ else }}
@@ -51,6 +59,10 @@
       <p>
         <time datetime='{{ .Date.Format "2006-01-02" }}'>{{ .Date.Format "2006-01-02" }}</time>
         <a href="{{ .Permalink }}">{{ .Title }}</a>
+        {{ $daysAgo := div (sub now.Unix .Date.Unix) 86400 }}
+        {{ if le $daysAgo 7 }}
+          <span style="background-color: #ffd700; color: #000; padding: 2px 6px; border-radius: 3px; font-size: 0.8em; font-weight: bold; margin-left: 8px;">NEU</span>
+        {{ end }}
       </p>
     {{ end }}
   {{ else }}
@@ -65,6 +77,10 @@
         <p>
           <time datetime='{{ .Date.Format "2006-01-02" }}'>{{ .Date.Format "2006-01-02" }}</time>
           <a href="{{ .Permalink }}">{{ .Title }}</a>
+          {{ $daysAgo := div (sub now.Unix .Date.Unix) 86400 }}
+          {{ if le $daysAgo 7 }}
+            <span style="background-color: #ffd700; color: #000; padding: 2px 6px; border-radius: 3px; font-size: 0.8em; font-weight: bold; margin-left: 8px;">NEW</span>
+          {{ end }}
         </p>
       {{ end }}
     {{ else }}
