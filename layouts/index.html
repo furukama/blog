@@ -3,13 +3,21 @@
 
 <h2>{{ if eq .Language.Lang "de" }}Beiträge{{ else }}Posts{{ end }}</h2>
 {{ if eq .Language.Lang "de" }}
-  {{ range first 5 (where .Site.RegularPages.ByDate.Reverse "Section" "posts") }}
-    {{ if eq .Language.Lang "de" }}
+  {{ $dePosts := slice }}
+  {{ range .Site.AllPages }}
+    {{ if and (eq .Kind "page") (in .File.Path "de/posts/") }}
+      {{ $dePosts = $dePosts | append . }}
+    {{ end }}
+  {{ end }}
+  {{ if $dePosts }}
+    {{ range first 5 (sort $dePosts "Date" "desc") }}
       <p>
         <time datetime='{{ .Date.Format "2006-01-02" }}'>{{ .Date.Format "2006-01-02" }}</time>
         <a href="{{ .Permalink }}">{{ .Title }}</a>
       </p>
     {{ end }}
+  {{ else }}
+    <p>Noch keine Beiträge.</p>
   {{ end }}
 {{ else }}
   {{ $postsSection := .Site.GetPage "section" "posts" }}
