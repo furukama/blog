@@ -3,21 +3,13 @@
 
 <h2>{{ if eq .Language.Lang "de" }}Beiträge{{ else }}Posts{{ end }}</h2>
 {{ if eq .Language.Lang "de" }}
-  {{ $postsSection := .Site.GetPage "/de/posts" }}
-  {{ if $postsSection }}
-    {{ $posts := $postsSection.RegularPages }}
-    {{ if $posts }}
-      {{ range first 5 ($posts.ByDate.Reverse) }}
-        <p>
-          <time datetime='{{ .Date.Format "2006-01-02" }}'>{{ .Date.Format "2006-01-02" }}</time>
-          <a href="{{ .Permalink }}">{{ .Title }}</a>
-        </p>
-      {{ end }}
-    {{ else }}
-      <p>Noch keine Beiträge.</p>
+  {{ range first 5 (where .Site.RegularPages.ByDate.Reverse "Section" "posts") }}
+    {{ if eq .Language.Lang "de" }}
+      <p>
+        <time datetime='{{ .Date.Format "2006-01-02" }}'>{{ .Date.Format "2006-01-02" }}</time>
+        <a href="{{ .Permalink }}">{{ .Title }}</a>
+      </p>
     {{ end }}
-  {{ else }}
-    <p>Noch keine Beiträge.</p>
   {{ end }}
 {{ else }}
   {{ $postsSection := .Site.GetPage "section" "posts" }}
