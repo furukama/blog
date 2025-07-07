@@ -24,8 +24,8 @@ images: ["https://images-na.ssl-images-amazon.com/images/S/compressed.photo.good
 
 {{< booklist title="How Big Things Get Done" author="Bent Flyvbjerg and Dan Gardner" date="May 2025" url="https://www.goodreads.com/book/show/61327449-how-big-things-get-done" rating="4.29" notes="Lots of anecdotes leave you well prepared for summer party small talk. The Sydney opera house story was fascinating to read. But: lots of words for very simple messages. Do plan. (3/5)" >}}
 
+{{< booklist title="The Sovereign Individual" author="James Dale Davidson and William Rees-Mogg" date="July 2025" url="https://www.goodreads.com/book/show/82256.The_Sovereign_Individual" rating="4.19" notes="What a strange book! Although so many projections came out wrong in the last 25 years, I really enjoyed reading it. Challenging a lot of ideas: Democracy is mainly a way of extracting wealth and building an army. Workers are exploiting capitalists. Violence is no longer a thing... whew. (4/5)" >}}
+
 ## Reading List
 
 {{< booklist title="The Technological Republic" author="Alexander C. Karp" url="https://www.goodreads.com/book/show/213618136-the-technological-republic" rating="3.71" >}}
-
-{{< booklist title="The Sovereign Individual" author="James Dale Davidson and William Rees-Mogg" url="https://www.goodreads.com/book/show/82256.The_Sovereign_Individual" rating="4.19" >}}
